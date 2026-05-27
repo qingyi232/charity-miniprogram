@@ -1,0 +1,283 @@
+.pair-page {
+  min-height: 100vh;
+  background: #F2F8F6;
+}
+.page-header {
+  padding: 20rpx 30rpx;
+  padding-top: calc(env(safe-area-inset-top) + 20rpx);
+  background: linear-gradient(135deg, #43B89C, #20A88E);
+}
+.page-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pair-scroll {
+  height: calc(100vh - 200rpx);
+  overflow-x: hidden;
+}
+.scroll-inner {
+  padding: 20rpx 30rpx;
+}
+
+.pair-card {
+  background: #fff;
+  border-radius: 20rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
+  overflow: hidden;
+}
+
+.card-main {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+}
+
+.pair-avatar {
+  width: 110rpx;
+  height: 110rpx;
+  border-radius: 50%;
+  border: 3rpx solid #E6F7F4;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+.pair-info {
+  flex: 1;
+}
+.pair-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 6rpx;
+}
+.pair-address {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 4rpx;
+}
+.inline-icon {
+  width: 24rpx;
+  height: 24rpx;
+  vertical-align: middle;
+}
+.pair-date {
+  font-size: 22rpx;
+  color: #bbb;
+}
+.pair-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.pair-call, .pair-chat {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #E6F7F4;
+}
+.action-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+/* 展开详情 */
+.card-detail {
+  padding: 0 24rpx 24rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.detail-section {
+  padding: 16rpx 0;
+}
+
+.detail-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8rpx 0;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.info-value {
+  font-size: 24rpx;
+  color: #333;
+}
+
+.health-mini-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.health-mini-item {
+  flex: 1;
+  background: #F8FFFE;
+  border-radius: 12rpx;
+  padding: 16rpx 8rpx;
+  text-align: center;
+}
+
+.hm-value {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333;
+  display: block;
+}
+
+.hm-value.alert {
+  color: #E8573A;
+}
+
+.hm-label {
+  font-size: 20rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+.no-health {
+  text-align: center;
+  padding: 20rpx;
+  color: #ccc;
+  font-size: 24rpx;
+}
+
+.health-time {
+  font-size: 20rpx;
+  color: #bbb;
+  display: block;
+  text-align: right;
+  margin-top: 8rpx;
+}
+
+.detail-actions {
+  padding-top: 16rpx;
+}
+
+.detail-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 16rpx;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+}
+
+.health-btn {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.btn-icon {
+  width: 28rpx;
+  height: 28rpx;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+}
+.empty-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 20rpx;
+}
+.empty-text {
+  font-size: 30rpx;
+  color: #999;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+.empty-desc {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+/* ========== Custom Input Modal ========== */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-mask {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+}
+.modal-dialog {
+  position: relative;
+  z-index: 1;
+  width: 600rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 40rpx 36rpx 0;
+}
+.modal-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #333;
+  display: block;
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+.modal-textarea {
+  width: 100%;
+  min-height: 200rpx;
+  max-height: 400rpx;
+  font-size: 28rpx;
+  color: #333;
+  padding: 20rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+  line-height: 1.6;
+  background: #fafafa;
+}
+.modal-actions {
+  display: flex;
+  border-top: 1rpx solid #eee;
+  margin: 30rpx -36rpx 0;
+}
+.modal-cancel, .modal-confirm {
+  flex: 1;
+  text-align: center;
+  padding: 28rpx 0;
+  font-size: 32rpx;
+}
+.modal-cancel {
+  color: #999;
+  border-right: 1rpx solid #eee;
+}
+.modal-confirm {
+  color: #2DB5A0;
+  font-weight: 600;
+}

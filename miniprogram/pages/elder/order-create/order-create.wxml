@@ -1,0 +1,67 @@
+<view class="create-page elder-theme">
+  <view class="form-card">
+    <view class="form-title">发布帮扶需求</view>
+
+    <view class="form-group">
+      <text class="form-label">需求类型</text>
+      <view class="category-grid">
+        <view class="category-item {{selectedCategory === item.value ? 'active' : ''}}"
+              wx:for="{{categories}}" wx:key="value"
+              bindtap="selectCategory" data-value="{{item.value}}">
+          <image class="category-icon" src="{{item.icon}}" mode="aspectFit" />
+          <text class="category-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">需求标题</text>
+      <input class="form-input elder-input" placeholder="简单描述您的需求"
+             value="{{title}}" bindinput="onInputTitle" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">详细描述</text>
+      <textarea class="form-textarea elder-input" placeholder="请详细描述您需要的帮助..."
+                value="{{description}}" bindinput="onInputDesc"
+                maxlength="500" auto-height />
+      <text class="char-count">{{description.length}}/500</text>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">服务时间</text>
+      <picker mode="date" value="{{serviceDate}}" start="{{today}}" bindchange="onDateChange">
+        <view class="form-picker elder-input">
+          <text>{{serviceDate || '请选择日期'}}</text>
+          <image class="picker-arrow" src="/static/icons/chevron-down.svg" mode="aspectFit" />
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">服务地址</text>
+      <view class="form-picker elder-input" bindtap="chooseLocation">
+        <text>{{address || '点击选择地址'}}</text>
+        <image class="picker-arrow" src="/static/icons/location.svg" mode="aspectFit" />
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">紧急程度</text>
+      <view class="urgency-row">
+        <view class="urgency-star {{urgency > i ? 'active' : ''}}"
+              wx:for="{{5}}" wx:key="*this" wx:for-item="s" wx:for-index="i"
+              bindtap="setUrgency" data-level="{{i + 1}}">
+          <image class="star-icon" src="{{urgency > i ? '/static/icons/star-filled.svg' : '/static/icons/star.svg'}}" mode="aspectFit" />
+        </view>
+        <text class="urgency-text">{{urgencyText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="submit-area">
+    <view class="submit-btn" bindtap="handleSubmit">
+      <text>发布需求</text>
+    </view>
+  </view>
+</view>

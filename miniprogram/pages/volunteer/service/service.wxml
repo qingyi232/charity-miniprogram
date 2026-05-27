@@ -1,0 +1,220 @@
+<view class="service-page">
+  <!-- 顶部青绿渐变区 -->
+  <view class="page-header-bg">
+    <text class="page-header-sub">大学生志愿者服务积分体系</text>
+    <view class="points-card">
+      <text class="points-title">心火积分</text>
+      <text class="points-sub">积分体系</text>
+      <view class="points-row">
+        <view class="points-main">
+          <text class="points-value">{{totalPoints}}</text>
+          <text class="points-label">总积分</text>
+        </view>
+        <view class="points-badges">
+          <image class="badge-svg" src="/static/icons/medal.svg" mode="aspectFit" />
+          <image class="badge-svg" src="/static/icons/star.svg" mode="aspectFit" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="service-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="scroll-inner">
+    <!-- 心火志愿 -->
+    <view class="section-card">
+      <view class="section-card-header">
+        <text class="section-card-title">心火志愿</text>
+      </view>
+      <view class="volunteer-info-row">
+        <image class="vol-avatar" src="{{userInfo.avatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+        <view class="vol-detail">
+          <text class="vol-name">{{userInfo.nickname || '志愿者'}}</text>
+          <text class="vol-level">{{starLevelText}}</text>
+        </view>
+        <view class="vol-points-badge">
+          <image class="badge-icon-sm" src="/static/icons/medal.svg" mode="aspectFit" />
+          <text class="badge-pts">{{totalPoints}} 分</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 积分体团 -->
+    <view class="section-card">
+      <view class="section-card-header">
+        <text class="section-card-title">积分体团</text>
+      </view>
+      <view class="points-rule-list">
+        <view class="points-rule-item">
+          <view class="rule-dot" style="background:#2DB5A0;"></view>
+          <text class="rule-text">完成帮扶订单</text>
+          <text class="rule-pts">+10 分/次</text>
+        </view>
+        <view class="points-rule-item">
+          <view class="rule-dot" style="background:#FFB800;"></view>
+          <text class="rule-text">获得好评</text>
+          <text class="rule-pts">+5 分/次</text>
+        </view>
+        <view class="points-rule-item">
+          <view class="rule-dot" style="background:#4A90D9;"></view>
+          <text class="rule-text">结对帮扶</text>
+          <text class="rule-pts">+20 分/对</text>
+        </view>
+        <view class="points-rule-item">
+          <view class="rule-dot" style="background:#E8573A;"></view>
+          <text class="rule-text">紧急救助响应</text>
+          <text class="rule-pts">+30 分/次</text>
+        </view>
+        <view class="points-rule-item">
+          <view class="rule-dot" style="background:#9C27B0;"></view>
+          <text class="rule-text">服务时长奖励</text>
+          <text class="rule-pts">+1 分/小时</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 统计概览 -->
+    <view class="stats-overview">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.totalOrders}}</text>
+        <text class="stat-label">完成任务</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.totalHours}}</text>
+        <text class="stat-label">服务时长(h)</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.avgRating}}</text>
+        <text class="stat-label">平均评分</text>
+      </view>
+    </view>
+
+    <!-- 月度/年度统计 -->
+    <view class="section-card">
+      <view class="section-card-header">
+        <text class="section-card-title">时段统计</text>
+        <view class="period-tabs">
+          <text class="period-tab {{statsPeriod === 'month' ? 'active' : ''}}"
+                bindtap="switchPeriod" data-period="month">本月</text>
+          <text class="period-tab {{statsPeriod === 'year' ? 'active' : ''}}"
+                bindtap="switchPeriod" data-period="year">本年</text>
+        </view>
+      </view>
+      <view class="period-stats-grid">
+        <view class="period-stat">
+          <text class="ps-value">{{periodStats.orders}}</text>
+          <text class="ps-label">完成订单</text>
+        </view>
+        <view class="period-stat">
+          <text class="ps-value">{{periodStats.hours}}</text>
+          <text class="ps-label">服务时长</text>
+        </view>
+        <view class="period-stat">
+          <text class="ps-value">{{periodStats.pairCount}}</text>
+          <text class="ps-label">服务老人</text>
+        </view>
+        <view class="period-stat">
+          <text class="ps-value">{{periodStats.points}}</text>
+          <text class="ps-label">获得积分</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 服务记录 -->
+    <view class="section-card">
+      <view class="section-card-header">
+        <text class="section-card-title">服务记录</text>
+      </view>
+      <view class="record-card" wx:for="{{recordList}}" wx:key="_id">
+        <view class="record-header">
+          <text class="record-title">{{item.title}}</text>
+          <view class="record-header-right">
+            <text wx:if="{{item.recordType === 'supplement'}}" class="record-tag tag-supplement">补充</text>
+            <text wx:if="{{item.recordType === 'checkin'}}" class="record-tag tag-checkin">签到</text>
+            <text class="record-date">{{item.completeDateStr}}</text>
+          </view>
+        </view>
+        <view class="record-body">
+          <text wx:if="{{item.recordType === 'supplement'}}" class="record-content">{{item.content}}</text>
+          <block wx:else>
+            <text class="record-elder">服务对象: {{item.elderName || '老人'}}</text>
+            <text class="record-category">类型: {{item.category || '帮扶'}}</text>
+          </block>
+        </view>
+        <view class="record-footer">
+          <block wx:if="{{item.recordType === 'order'}}">
+            <view class="record-rating">
+              <image wx:for="{{5}}" wx:key="*this" wx:for-item="s" wx:for-index="idx"
+                     class="star-icon {{idx < (item.rating || 5) ? 'active' : ''}}"
+                     src="{{idx < (item.rating || 5) ? '/static/icons/star-filled.svg' : '/static/icons/star.svg'}}" mode="aspectFit" />
+            </view>
+            <text class="record-hours">{{item.serviceHours || 1}}h</text>
+          </block>
+          <block wx:elif="{{item.recordType === 'supplement'}}">
+            <text class="record-status status-{{item.status}}">{{item.statusText}}</text>
+            <text class="record-hours">{{item.serviceHours || 1}}h</text>
+          </block>
+          <block wx:elif="{{item.recordType === 'checkin'}}">
+            <text class="record-status status-checkin">{{item.category}}</text>
+          </block>
+        </view>
+      </view>
+
+      <view wx:if="{{recordList.length === 0}}" class="empty-state">
+        <image class="empty-icon" src="/static/icons/chart.svg" mode="aspectFit" />
+        <text class="empty-text">暂无服务记录</text>
+      </view>
+    </view>
+
+    <!-- 手动补充记录 -->
+    <view class="supplement-section">
+      <view class="supplement-btn" bindtap="addSupplementRecord">
+        <image class="supplement-icon" src="/static/icons/edit.svg" mode="aspectFit" style="width:36rpx;height:36rpx;" />
+        <text>补充服务记录</text>
+      </view>
+      <text class="supplement-tip">手动补充遗漏的服务记录，需管理员审核</text>
+    </view>
+
+    <!-- 生成服务档案 -->
+    <view class="archive-section">
+      <view class="archive-btn" bindtap="generateArchive">
+        <image class="archive-icon" src="/static/icons/notepad.svg" mode="aspectFit" />
+        <text>生成公益服务档案</text>
+      </view>
+      <text class="archive-tip">生成服务档案图片，可长按保存或分享</text>
+    </view>
+
+    <view class="bottom-space"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 自定义输入弹窗 -->
+  <view wx:if="{{showInputModal}}" class="modal-overlay">
+    <view class="modal-mask" bindtap="cancelInputModal"></view>
+    <view class="modal-dialog">
+      <text class="modal-title">{{inputModalTitle}}</text>
+      <text wx:if="{{inputModalDesc}}" class="modal-desc">{{inputModalDesc}}</text>
+      <textarea class="modal-textarea" placeholder="{{inputModalPlaceholder}}" value="{{inputModalValue}}" bindinput="onModalInput" auto-height maxlength="500" />
+      <view class="modal-actions">
+        <view class="modal-cancel" bindtap="cancelInputModal"><text>取消</text></view>
+        <view class="modal-confirm" bindtap="confirmInputModal"><text>提交</text></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 档案预览弹窗 -->
+  <view wx:if="{{showArchive}}" class="archive-overlay" bindtap="closeArchive">
+    <view class="archive-modal" catchtap="">
+      <canvas canvas-id="archiveCanvas" id="archiveCanvas" class="archive-canvas" type="2d"></canvas>
+      <view class="archive-actions">
+        <view class="archive-save-btn" bindtap="saveArchive">
+          <text>保存到相册</text>
+        </view>
+        <view class="archive-close-btn" bindtap="closeArchive">
+          <text>关闭</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

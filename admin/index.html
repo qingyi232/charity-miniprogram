@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>青老代际智能融合平台 - 管理后台</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #2DB5A0;
+      --primary-dark: #20A88E;
+      --danger: #E8573A;
+      --warning: #F5A623;
+      --bg: #f0f2f5;
+      --card: #fff;
+      --text: #333;
+      --text-secondary: #666;
+      --border: #e8e8e8;
+      --sidebar-width: 220px;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); }
+
+    /* Login */
+    .login-wrap { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #e6f7f4 0%, #f0f2f5 100%); }
+    .login-box { background: var(--card); padding: 48px; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); width: 400px; }
+    .login-box h2 { text-align: center; color: var(--primary); margin-bottom: 8px; font-size: 24px; }
+    .login-box .sub { text-align: center; color: var(--text-secondary); margin-bottom: 32px; font-size: 14px; }
+    .login-box input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; margin-bottom: 16px; outline: none; transition: border 0.3s; }
+    .login-box input:focus { border-color: var(--primary); }
+    .login-box button { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+    .login-box button:hover { background: var(--primary-dark); }
+
+    /* Layout */
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-width); background: #1a1a2e; color: #fff; padding-top: 0; position: fixed; height: 100vh; overflow-y: auto; }
+    .sidebar-logo { padding: 24px 20px; font-size: 18px; font-weight: 700; color: var(--primary); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .sidebar-menu { list-style: none; padding: 8px 0; }
+    .sidebar-menu li { padding: 12px 24px; cursor: pointer; font-size: 14px; color: rgba(255,255,255,0.7); transition: all 0.3s; display: flex; align-items: center; gap: 10px; }
+    .sidebar-menu li:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .sidebar-menu li.active { background: var(--primary); color: #fff; border-radius: 0 24px 24px 0; margin-right: 8px; }
+    .sidebar-menu li .icon { width: 18px; text-align: center; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sidebar-menu li .icon svg { display: block; }
+
+    .main { margin-left: var(--sidebar-width); flex: 1; padding: 24px; max-width: calc(100vw - var(--sidebar-width)); overflow-x: hidden; box-sizing: border-box; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .topbar h1 { font-size: 22px; font-weight: 600; }
+    .topbar .logout { padding: 8px 16px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--text-secondary); background: var(--card); }
+    .topbar .logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* Dashboard */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--card); border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .stat-card .label { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+    .stat-card .value { font-size: 32px; font-weight: 700; color: var(--primary); }
+    .stat-card.danger .value { color: var(--danger); }
+    .stat-card.warning .value { color: var(--warning); }
+
+    /* Table */
+    .panel { background: var(--card); border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 24px; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .panel-title { font-size: 16px; font-weight: 600; }
+    .panel-actions { display: flex; gap: 8px; }
+    .btn { padding: 8px 16px; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.3s; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-sm { padding: 4px 12px; font-size: 12px; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    th { text-align: left; padding: 12px 16px; font-size: 13px; color: var(--text-secondary); border-bottom: 1px solid var(--border); font-weight: 500; }
+    td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid #f5f5f5; }
+    tr:hover td { background: #fafafa; }
+    .tag { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 12px; }
+    .tag-green { background: #e6f7f4; color: #2DB5A0; }
+    .tag-orange { background: #fff3e0; color: #F57C00; }
+    .tag-red { background: #ffebee; color: #c62828; }
+    .tag-blue { background: #e3f2fd; color: #1565c0; }
+    .tag-gray { background: #f5f5f5; color: #999; }
+
+    .filter-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-bar select, .filter-bar input { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; }
+    .filter-bar select:focus, .filter-bar input:focus { border-color: var(--primary); }
+
+    .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 16px; }
+    .pagination button { padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); cursor: pointer; font-size: 13px; }
+    .pagination button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Modal */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+    .modal { background: var(--card); border-radius: 16px; padding: 32px; width: 500px; max-height: 80vh; overflow-y: auto; }
+    .modal h3 { font-size: 18px; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Login -->
+  <div id="loginPage" class="login-wrap">
+    <div class="login-box">
+      <h2>青老代际智能融合平台</h2>
+      <p class="sub">管理后台</p>
+      <input type="text" id="loginUser" placeholder="管理员账号" value="admin">
+      <input type="password" id="loginPwd" placeholder="密码" value="">
+      <button onclick="handleLogin()">登 录</button>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div id="mainLayout" class="layout hidden">
+    <nav class="sidebar">
+      <div class="sidebar-logo">青老代际智能融合平台</div>
+      <ul class="sidebar-menu">
+        <li class="active" onclick="switchPage('dashboard')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> 数据概览</li>
+        <li onclick="switchPage('verify')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span> 认证审核</li>
+        <li onclick="switchPage('users')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> 用户管理</li>
+        <li onclick="switchPage('orders')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 12h6"/><path d="M9 16h6"/></svg></span> 订单管理</li>
+        <li onclick="switchPage('announcements')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span> 公告管理</li>
+        <li onclick="switchPage('health')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span> 健康监测</li>
+        <li onclick="switchPage('sos')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span> 紧急求助</li>
+        <li onclick="switchPage('supplements')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg></span> 服务记录审核</li>
+        <li onclick="switchPage('certificates')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10"/><path d="M7 12h4"/><circle cx="15" cy="16" r="2"/><path d="M17 16l2 2"/></svg></span> 证书审核</li>
+        <li onclick="switchPage('pairs')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6"/><path d="M23 11h-6"/></svg></span> 结对管理</li>
+        <li onclick="switchPage('checkins')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> 签到记录</li>
+        <li onclick="switchPage('shop')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></span> 积分商城</li>
+        <li onclick="switchPage('training')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span> 培训内容</li>
+        <li onclick="switchPage('elderShop')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> 便民商城</li>
+        <li onclick="switchPage('elderOrders')"><span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span> 便民订单</li>
+      </ul>
+    </nav>
+
+    <div class="main">
+      <div class="topbar">
+        <h1 id="pageTitle">数据概览</h1>
+        <button class="logout" onclick="handleLogout()">退出登录</button>
+      </div>
+
+      <!-- Dashboard -->
+      <div id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="label">总用户数</div><div class="value" id="s-totalUsers">--</div></div>
+          <div class="stat-card"><div class="label">志愿者数</div><div class="value" id="s-volunteerCount">--</div></div>
+          <div class="stat-card"><div class="label">老年人数</div><div class="value" id="s-elderCount">--</div></div>
+          <div class="stat-card"><div class="label">总订单数</div><div class="value" id="s-totalOrders">--</div></div>
+          <div class="stat-card warning"><div class="label">待接单</div><div class="value" id="s-pendingOrders">--</div></div>
+          <div class="stat-card"><div class="label">已完成</div><div class="value" id="s-completedOrders">--</div></div>
+          <div class="stat-card"><div class="label">结对数</div><div class="value" id="s-activePairs">--</div></div>
+          <div class="stat-card danger"><div class="label">待处理SOS</div><div class="value" id="s-unresolvedSOS">--</div></div>
+          <div class="stat-card warning"><div class="label">待审核记录</div><div class="value" id="s-pendingSupplements">--</div></div>
+          <div class="stat-card warning"><div class="label">待审核证书</div><div class="value" id="s-pendingCerts">--</div></div>
+        </div>
+      </div>
+
+      <!-- Verify -->
+      <div id="page-verify" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">待审核志愿者认证</span>
+            <button class="btn btn-outline" onclick="loadPendingVerify()">刷新</button>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>昵称</th><th>手机</th><th>服务区域</th><th>服务类型</th><th>注册时间</th><th>操作</th></tr></thead>
+            <tbody id="verifyTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Users -->
+      <div id="page-users" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">用户列表</span>
+          </div>
+          <div class="filter-bar">
+            <select id="userRoleFilter" onchange="loadUsers()">
+              <option value="">全部角色</option>
+              <option value="elder">老年人</option>
+              <option value="volunteer">志愿者</option>
+            </select>
+            <select id="userVerifiedFilter" onchange="loadUsers()">
+              <option value="">全部状态</option>
+              <option value="true">已认证</option>
+              <option value="false">未认证</option>
+            </select>
+            <input type="text" id="userKeyword" placeholder="搜索昵称..." onkeyup="if(event.key==='Enter')loadUsers()">
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>昵称</th><th>角色</th><th>手机</th><th>认证</th><th>服务时长</th><th>注册时间</th><th>操作</th></tr></thead>
+            <tbody id="usersTable"></tbody>
+          </table></div>
+          <div class="pagination" id="usersPagination"></div>
+        </div>
+      </div>
+
+      <!-- Orders -->
+      <div id="page-orders" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">订单列表</span>
+          </div>
+          <div class="filter-bar">
+            <select id="orderStatusFilter" onchange="loadOrders()">
+              <option value="">全部状态</option>
+              <option value="pending">待接单</option>
+              <option value="accepted">已接单</option>
+              <option value="in_progress">进行中</option>
+              <option value="completed">已完成</option>
+              <option value="cancelled">已取消</option>
+            </select>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>标题</th><th>老人</th><th>志愿者</th><th>类型</th><th>状态</th><th>创建时间</th></tr></thead>
+            <tbody id="ordersTable"></tbody>
+          </table></div>
+          <div class="pagination" id="ordersPagination"></div>
+        </div>
+      </div>
+
+      <!-- Announcements -->
+      <div id="page-announcements" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">公告管理</span>
+            <button class="btn btn-primary" onclick="showAnnouncementModal()">+ 新建公告</button>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>标题</th><th>类型</th><th>状态</th><th>报名数</th><th>置顶</th><th>创建时间</th><th>操作</th></tr></thead>
+            <tbody id="announcementsTable"></tbody>
+          </table></div>
+        </div>
+
+        <div class="panel" id="signupsPanel" style="margin-top:24px;display:none;">
+          <div class="panel-header">
+            <span class="panel-title" id="signupsPanelTitle">活动报名列表</span>
+            <button class="btn btn-outline" onclick="document.getElementById('signupsPanel').style.display='none'">关闭</button>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>报名人</th><th>角色</th><th>报名时间</th></tr></thead>
+            <tbody id="signupsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Health -->
+      <div id="page-health" class="hidden">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">健康数据监控</span></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>用户ID</th><th>血压</th><th>心率</th><th>血氧</th><th>血糖</th><th>体温</th><th>来源</th><th>时间</th></tr></thead>
+            <tbody id="healthTable"></tbody>
+          </table></div>
+        </div>
+
+        <div class="panel" style="margin-top:24px;">
+          <div class="panel-header">
+            <span class="panel-title">健康预警记录</span>
+            <button class="btn btn-outline" onclick="loadHealthAlerts()">刷新</button>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>用户</th><th>预警内容</th><th>级别</th><th>状态</th><th>时间</th></tr></thead>
+            <tbody id="healthAlertsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- SOS -->
+      <div id="page-sos" class="hidden">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">紧急求助记录</span></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>求助人</th><th>内容</th><th>位置</th><th>状态</th><th>时间</th></tr></thead>
+            <tbody id="sosTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Supplements -->
+      <div id="page-supplements" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">待审核服务记录</span>
+            <div class="panel-actions">
+              <select id="supplementStatusFilter" onchange="loadSupplements()" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+                <option value="pending">待审核</option>
+                <option value="">全部</option>
+                <option value="approved">已通过</option>
+                <option value="rejected">已拒绝</option>
+              </select>
+              <button class="btn btn-outline" onclick="loadSupplements()">刷新</button>
+            </div>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>提交人</th><th>记录内容</th><th>状态</th><th>提交时间</th><th>审核时间</th><th>操作</th></tr></thead>
+            <tbody id="supplementsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Certificates -->
+      <div id="page-certificates" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">公益服务证书审核</span>
+            <div class="panel-actions">
+              <select id="certStatusFilter" onchange="loadCertificates()" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+                <option value="pending">待审核</option>
+                <option value="">全部</option>
+                <option value="approved">已通过</option>
+                <option value="rejected">已拒绝</option>
+              </select>
+              <button class="btn btn-outline" onclick="loadCertificates()">刷新</button>
+            </div>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>申请人</th><th>服务时长</th><th>完成订单</th><th>结对数</th><th>状态</th><th>申请时间</th><th>操作</th></tr></thead>
+            <tbody id="certificatesTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Pairs -->
+      <div id="page-pairs" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">结对帮扶列表</span>
+            <div class="panel-actions">
+              <select id="pairStatusFilter" onchange="loadPairs()" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+                <option value="active">进行中</option>
+                <option value="">全部</option>
+              </select>
+              <button class="btn btn-outline" onclick="loadPairs()">刷新</button>
+            </div>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>志愿者</th><th>老人</th><th>服务次数</th><th>结对日期</th><th>最近服务</th><th>状态</th></tr></thead>
+            <tbody id="pairsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Checkins -->
+      <div id="page-checkins" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">签到签退记录</span>
+            <button class="btn btn-outline" onclick="loadCheckins()">刷新</button>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>志愿者</th><th>结对ID</th><th>类型</th><th>位置</th><th>服务内容</th><th>时间</th></tr></thead>
+            <tbody id="checkinsTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Shop -->
+      <div id="page-shop" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">积分商城 · 商品管理</span>
+            <button class="btn btn-primary" onclick="showGoodsModal()">+ 新增商品</button>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>商品名称</th><th>分类</th><th>积分价格</th><th>库存</th><th>已兑换</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody id="shopTable"></tbody>
+          </table></div>
+        </div>
+
+        <div class="panel" style="margin-top:24px;">
+          <div class="panel-header">
+            <span class="panel-title">兑换订单管理</span>
+            <div class="panel-actions">
+              <select id="exchangeStatusFilter" onchange="loadExchangeOrders()" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+                <option value="">全部状态</option>
+                <option value="pending">待发放</option>
+                <option value="shipped">已发出</option>
+                <option value="completed">已完成</option>
+              </select>
+              <button class="btn btn-outline" onclick="loadExchangeOrders()">刷新</button>
+            </div>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>用户</th><th>商品</th><th>数量</th><th>消耗积分</th><th>状态</th><th>下单时间</th><th>操作</th></tr></thead>
+            <tbody id="exchangeTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Training -->
+      <div id="page-training" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">培训内容管理</span>
+            <button class="btn btn-primary" onclick="showTrainingModal()">+ 新增内容</button>
+          </div>
+          <div class="filter-bar">
+            <select id="trainingTypeFilter" onchange="loadTrainingContent()">
+              <option value="">全部类型</option>
+              <option value="required_course">必修课程</option>
+              <option value="optional_course">选修课程</option>
+              <option value="expert">专家库</option>
+              <option value="case">案例库</option>
+              <option value="template">模板库</option>
+              <option value="elder_course">老年课程</option>
+            </select>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>名称</th><th>类型</th><th>描述</th><th>排序</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody id="trainingTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Elder Shop -->
+      <div id="page-elderShop" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">便民商城 · 商品管理</span>
+            <button class="btn btn-primary" onclick="showElderGoodsModal()">+ 新增商品</button>
+          </div>
+          <div class="filter-bar">
+            <select id="elderGoodsCategoryFilter" onchange="loadElderGoods()">
+              <option value="">全部分类</option>
+              <option value="grain_oil">粮油米面</option>
+              <option value="daily">日用百货</option>
+              <option value="food">食品饮料</option>
+              <option value="health_care">保健用品</option>
+              <option value="other">其他</option>
+            </select>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>商品图</th><th>商品名称</th><th>分类</th><th>价格</th><th>库存</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody id="elderShopTable"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Elder Shop Orders -->
+      <div id="page-elderOrders" class="hidden">
+        <div class="stats-grid" id="elderOrderStats">
+          <div class="stat-card"><div class="label">总订单</div><div class="value" id="eoTotal">0</div></div>
+          <div class="stat-card warning"><div class="label">待接单</div><div class="value" id="eoPending">0</div></div>
+          <div class="stat-card"><div class="label">配送中</div><div class="value" id="eoDelivering">0</div></div>
+          <div class="stat-card"><div class="label">已完成</div><div class="value" id="eoCompleted">0</div></div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="label">已收款总额</div><div class="value" id="eoIncome" style="font-size:28px;">¥0</div></div>
+          <div class="stat-card danger"><div class="label">待收款总额</div><div class="value" id="eoUnpaid" style="font-size:28px;">¥0</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">便民商城 · 订单管理</span>
+          </div>
+          <div class="filter-bar">
+            <select id="eoStatusFilter" onchange="loadElderOrders()">
+              <option value="">全部状态</option>
+              <option value="pending_accept">待接单</option>
+              <option value="accepted">已接单</option>
+              <option value="delivering">配送中</option>
+              <option value="delivered">已送达</option>
+              <option value="completed">已完成</option>
+              <option value="cancelled">已取消</option>
+            </select>
+            <select id="eoPayFilter" onchange="loadElderOrders()">
+              <option value="">全部付款</option>
+              <option value="unpaid">待付款</option>
+              <option value="paid">已付款</option>
+            </select>
+          </div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>订单号</th><th>商品</th><th>数量</th><th>金额</th><th>下单人</th><th>配送志愿者</th><th>订单状态</th><th>付款状态</th><th>操作</th></tr></thead>
+            <tbody id="elderOrdersTable"></tbody>
+          </table></div>
+          <div class="pagination" id="elderOrdersPagination"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Training Modal -->
+  <div id="trainingModal" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="trainingModalTitle">新增培训内容</h3>
+      <input type="hidden" id="trainingId">
+      <div class="form-group">
+        <label>类型</label>
+        <select id="trainingType" onchange="onTrainingTypeChange()">
+          <option value="required_course">必修课程</option>
+          <option value="optional_course">选修课程</option>
+          <option value="expert">专家</option>
+          <option value="case">案例</option>
+          <option value="template">模板</option>
+          <option value="elder_course">老年课程</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label id="trainingNameLabel">名称</label>
+        <input type="text" id="trainingName" placeholder="名称">
+      </div>
+      <div class="form-group">
+        <label>描述</label>
+        <textarea id="trainingDesc" placeholder="简短描述"></textarea>
+      </div>
+      <div class="form-group" id="trainingDurationGroup">
+        <label>时长</label>
+        <input type="text" id="trainingDuration" placeholder="如：10分钟">
+      </div>
+      <div class="form-group" id="trainingFieldGroup" style="display:none;">
+        <label>专业领域</label>
+        <input type="text" id="trainingField" placeholder="如：老年医学">
+      </div>
+      <div class="form-group" id="trainingGroupTitleGroup" style="display:none;">
+        <label>分组标题</label>
+        <input type="text" id="trainingGroupTitle" placeholder="如：服务操作手册（SOP）">
+      </div>
+      <div class="form-group" id="trainingCommunityGroup" style="display:none;">
+        <label>社区</label>
+        <input type="text" id="trainingCommunity" placeholder="所属社区">
+      </div>
+      <div class="form-group" id="trainingTagsGroup" style="display:none;">
+        <label>标签（逗号分隔）</label>
+        <input type="text" id="trainingTags" placeholder="如：陪伴,独居老人">
+      </div>
+      <div class="form-group">
+        <label>排序（数字越小越靠前）</label>
+        <input type="number" id="trainingSortOrder" placeholder="100" value="100">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('trainingModal')">取消</button>
+        <button class="btn btn-primary" onclick="saveTrainingContent()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elder Goods Modal -->
+  <div id="elderGoodsModal" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="elderGoodsModalTitle">新增便民商品</h3>
+      <input type="hidden" id="elderGoodsId">
+      <div class="form-group">
+        <label>商品名称</label>
+        <input type="text" id="elderGoodsName" placeholder="商品名称">
+      </div>
+      <div class="form-group">
+        <label>分类</label>
+        <select id="elderGoodsCategory">
+          <option value="grain_oil">粮油米面</option>
+          <option value="daily">日用百货</option>
+          <option value="food">食品饮料</option>
+          <option value="health_care">保健用品</option>
+          <option value="other">其他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>价格（元）</label>
+        <input type="number" id="elderGoodsPrice" placeholder="价格" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>库存数量</label>
+        <input type="number" id="elderGoodsStock" placeholder="库存">
+      </div>
+      <div class="form-group">
+        <label>商品描述</label>
+        <textarea id="elderGoodsDesc" placeholder="简短描述"></textarea>
+      </div>
+      <div class="form-group">
+        <label>规格/单位</label>
+        <input type="text" id="elderGoodsSpec" placeholder="如：5kg/袋、500ml/瓶">
+      </div>
+      <div class="form-group">
+        <label>商品图片</label>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="flex:1;">
+            <label for="elderGoodsImageFile" style="display:flex;align-items:center;justify-content:center;height:120px;border:2px dashed var(--border);border-radius:8px;cursor:pointer;color:var(--text-secondary);font-size:13px;transition:border 0.3s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+              <span id="elderUploadLabel">点击上传图片</span>
+            </label>
+            <input type="file" id="elderGoodsImageFile" accept="image/*" style="display:none;" onchange="handleElderImageUpload(this)">
+          </div>
+          <div id="elderGoodsImagePreview" style="width:120px;height:120px;border-radius:8px;overflow:hidden;display:none;flex-shrink:0;">
+            <img id="elderGoodsImagePreviewImg" style="width:100%;height:100%;object-fit:cover;" alt="预览">
+          </div>
+        </div>
+        <input type="hidden" id="elderGoodsImage">
+        <div id="elderUploadProgress" style="margin-top:6px;font-size:12px;color:var(--text-secondary);display:none;"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('elderGoodsModal')">取消</button>
+        <button class="btn btn-primary" onclick="saveElderGoods()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Goods Modal -->
+  <div id="goodsModal" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="goodsModalTitle">新增商品</h3>
+      <input type="hidden" id="goodsId">
+      <div class="form-group">
+        <label>商品名称</label>
+        <input type="text" id="goodsName" placeholder="商品名称">
+      </div>
+      <div class="form-group">
+        <label>分类</label>
+        <select id="goodsCategory">
+          <option value="certificate">公益证书</option>
+          <option value="gift">志愿者纪念品</option>
+          <option value="course">培训课程</option>
+          <option value="other">其他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>积分价格</label>
+        <input type="number" id="goodsPrice" placeholder="兑换所需积分">
+      </div>
+      <div class="form-group">
+        <label>库存数量</label>
+        <input type="number" id="goodsStock" placeholder="库存">
+      </div>
+      <div class="form-group">
+        <label>商品描述</label>
+        <textarea id="goodsDesc" placeholder="简短描述"></textarea>
+      </div>
+      <div class="form-group">
+        <label>详细说明</label>
+        <textarea id="goodsDetail" placeholder="详细说明（选填）"></textarea>
+      </div>
+      <div class="form-group">
+        <label>商品图片</label>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <div style="flex:1;">
+            <label for="goodsImageFile" style="display:flex;align-items:center;justify-content:center;height:120px;border:2px dashed var(--border);border-radius:8px;cursor:pointer;color:var(--text-secondary);font-size:13px;transition:border 0.3s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+              <span id="uploadLabel">点击上传图片</span>
+            </label>
+            <input type="file" id="goodsImageFile" accept="image/*" style="display:none;" onchange="handleImageUpload(this)">
+          </div>
+          <div id="goodsImagePreview" style="width:120px;height:120px;border-radius:8px;overflow:hidden;display:none;flex-shrink:0;">
+            <img id="goodsImagePreviewImg" style="width:100%;height:100%;object-fit:cover;" alt="预览">
+          </div>
+        </div>
+        <input type="hidden" id="goodsImage">
+        <div id="uploadProgress" style="margin-top:6px;font-size:12px;color:var(--text-secondary);display:none;"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('goodsModal')">取消</button>
+        <button class="btn btn-primary" onclick="saveGoods()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Announcement Modal -->
+  <div id="announcementModal" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="announcementModalTitle">新建公告</h3>
+      <input type="hidden" id="annId">
+      <div class="form-group">
+        <label>标题</label>
+        <input type="text" id="annTitle" placeholder="公告标题">
+      </div>
+      <div class="form-group">
+        <label>类型</label>
+        <select id="annType">
+          <option value="notice">通知公告</option>
+          <option value="activity">公益活动</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>内容</label>
+        <textarea id="annContent" placeholder="公告内容"></textarea>
+      </div>
+      <div class="form-group">
+        <label>置顶</label>
+        <select id="annIsTop">
+          <option value="false">否</option>
+          <option value="true">是</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('announcementModal')">取消</button>
+        <button class="btn btn-primary" onclick="saveAnnouncement()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = 'dashboard';
+    let adminInfo = null;
+
+    const STATUS_MAP = { pending: '待接单', accepted: '已接单', in_progress: '进行中', completed: '已完成', cancelled: '已取消' };
+    const STATUS_TAG = { pending: 'tag-orange', accepted: 'tag-blue', in_progress: 'tag-green', completed: 'tag-green', cancelled: 'tag-gray' };
+
+    function formatTime(t) {
+      if (!t) return '--';
+      const d = new Date(t);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    async function callCloud(name, data) {
+      try {
+        const resp = await fetch('/api/cloud', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, data })
+        });
+        return await resp.json();
+      } catch (e) {
+        console.error('API request failed:', e);
+        return { code: 500, message: e.message || '网络请求错误' };
+      }
+    }
+
+    async function routeAction(db, _, name, data) {
+      const { action, ...params } = data;
+      if (name === 'admin') return await adminRoute(db, _, action, params);
+      if (name === 'points') return await pointsRoute(db, _, action, params);
+      return { code: 400, message: '未知服务' };
+    }
+
+    async function adminRoute(db, _, action, p) {
+      const page = p.page || 1, ps = p.pageSize || 20, skip = (page - 1) * ps;
+      switch (action) {
+        case 'login': {
+          const r = await db.collection('admins').where({ username: p.username, password: p.password, status: 'active' }).get();
+          if (!r.data.length) return { code: 401, message: '用户名或密码错误' };
+          const a = { ...r.data[0] }; delete a.password; return { code: 200, data: a };
+        }
+        case 'dashboard': {
+          const [uc, vc, ec, oc, po, co, pc, sc] = await Promise.all([
+            db.collection('users').count(), db.collection('users').where({ role: 'volunteer' }).count(),
+            db.collection('users').where({ role: 'elder' }).count(), db.collection('orders').count(),
+            db.collection('orders').where({ status: 'pending' }).count(), db.collection('orders').where({ status: 'completed' }).count(),
+            db.collection('pairs').where({ status: 'active' }).count(), db.collection('messages').where({ type: 'sos', read: false }).count()
+          ]);
+          return { code: 200, data: { totalUsers: uc.total, volunteerCount: vc.total, elderCount: ec.total, totalOrders: oc.total, pendingOrders: po.total, completedOrders: co.total, activePairs: pc.total, unresolvedSOS: sc.total } };
+        }
+        case 'listUsers': {
+          const q = {}; if (p.role) q.role = p.role; if (typeof p.verified === 'boolean') q.verified = p.verified;
+          if (p.keyword) q.nickname = db.RegExp({ regexp: p.keyword, options: 'i' });
+          const [cnt, res] = await Promise.all([db.collection('users').where(q).count(), db.collection('users').where(q).orderBy('createTime', 'desc').skip(skip).limit(ps).get()]);
+          return { code: 200, data: { list: res.data, total: cnt.total, page, pageSize: ps } };
+        }
+        case 'listPendingVerify': {
+          const q = { role: 'volunteer', verified: false, verifyApplied: true };
+          const [cnt, res] = await Promise.all([db.collection('users').where(q).count(), db.collection('users').where(q).orderBy('createTime', 'desc').skip(skip).limit(ps).get()]);
+          return { code: 200, data: { list: res.data, total: cnt.total } };
+        }
+        case 'verifyVolunteer': {
+          const ud = { verified: !!p.verified, verifyTime: new Date(), updateTime: new Date() };
+          if (!p.verified && p.rejectReason) ud.rejectReason = p.rejectReason;
+          await db.collection('users').doc(p.userId).update(ud);
+          return { code: 200, message: p.verified ? '审核通过' : '审核拒绝' };
+        }
+        case 'listOrders': {
+          const q = {}; if (p.status) q.status = p.status; if (p.category) q.category = p.category;
+          const [cnt, res] = await Promise.all([db.collection('orders').where(q).count(), db.collection('orders').where(q).orderBy('createTime', 'desc').skip(skip).limit(ps).get()]);
+          return { code: 200, data: { list: res.data, total: cnt.total, page, pageSize: ps } };
+        }
+        case 'listAnnouncements': {
+          const q = { status: _.neq('deleted') };
+          const [cnt, res] = await Promise.all([db.collection('announcements').where(q).count(), db.collection('announcements').where(q).orderBy('createTime', 'desc').skip(skip).limit(ps).get()]);
+          return { code: 200, data: { list: res.data, total: cnt.total } };
+        }
+        case 'createAnnouncement': {
+          const now = new Date();
+          const ann = { title: p.data.title, content: p.data.content || '', type: p.data.type || 'notice', cover: p.data.cover || '', isTop: p.data.isTop || false, activityDate: p.data.activityDate || '', activityLocation: p.data.activityLocation || '', signupCount: 0, signups: [], maxSignup: p.data.maxSignup || 0, status: 'active', createTime: now, updateTime: now };
+          const res = await db.collection('announcements').add(ann); return { code: 200, data: { _id: res.id } };
+        }
+        case 'updateAnnouncement': {
+          const ud = { ...p.data, updateTime: new Date() }; delete ud._id;
+          await db.collection('announcements').doc(p.id).update(ud); return { code: 200, message: '更新成功' };
+        }
+        case 'deleteAnnouncement': {
+          await db.collection('announcements').doc(p.id).update({ status: 'deleted', updateTime: new Date() }); return { code: 200, message: '删除成功' };
+        }
+        case 'listHealthData': {
+          const q = {}; if (p.userId) q.userId = p.userId;
+          const res = await db.collection('health_data').where(q).orderBy('createTime', 'desc').skip(skip).limit(ps).get();
+          return { code: 200, data: res.data };
+        }
+        case 'getHealthAlerts': {
+          const res = await db.collection('messages').where({ type: 'health_alert' }).orderBy('createTime', 'desc').skip(skip).limit(ps).get();
+          return { code: 200, data: res.data };
+        }
+        case 'listSOS': {
+          const res = await db.collection('messages').where({ type: 'sos' }).orderBy('createTime', 'desc').skip(skip).limit(ps).get();
+          return { code: 200, data: res.data };
+        }
+        case 'listCheckins': {
+          const res = await db.collection('service_checkins').orderBy('createTime', 'desc').skip(skip).limit(ps).get();
+          return { code: 200, data: res.data };
+        }
+        case 'listSupplements': {
+          const q = {}; if (p.status) q.status = p.status;
+          const [cnt, res] = await Promise.all([db.collection('supplement_records').where(q).count(), db.collection('supplement_records').where(q).orderBy('createTime', 'desc').skip(skip).limit(ps).get()]);
+          return { code: 200, data: { list: res.data, total: cnt.total } };
+        }
+        case 'approveSupplementRecord': {
+          await db.collection('supplement_records').doc(p.recordId).update({ status: p.approved ? 'approved' : 'rejected', reviewTime: new Date() });
+          return { code: 200, message: p.approved ? '已通过' : '已拒绝' };
+        }
+        case 'listCertificates': {
+          const q = {}; if (p.status) q.status = p.status;
+          const [cnt, res] = await Promise.all([db.collection('certificates').where(q).count(), db.collection('certificates').where(q).orderBy('createTime', 'desc').skip(skip).limit(ps).get()]);
+          return { code: 200, data: { list: res.data, total: cnt.total } };
+        }
+        case 'approveCertificate': {
+          await db.collection('certificates').doc(p.certId).update({ status: p.approved ? 'approved' : 'rejected', reviewTime: new Date() });
+          return { code: 200, message: p.approved ? '已通过' : '已拒绝' };
+        }
+        case 'listPairs': {
+          const q = {}; if (p.status) q.status = p.status;
+          const [cnt, res] = await Promise.all([db.collection('pairs').where(q).count(), db.collection('pairs').where(q).orderBy('createTime', 'desc').skip(skip).limit(ps).get()]);
+          return { code: 200, data: { list: res.data, total: cnt.total } };
+        }
+        case 'listActivitySignups': {
+          const q = {}; if (p.activityId) q.activityId = p.activityId;
+          const [cnt, res] = await Promise.all([db.collection('activity_signups').where(q).count(), db.collection('activity_signups').where(q).orderBy('createTime', 'desc').skip(skip).limit(50).get()]);
+          return { code: 200, data: { list: res.data, total: cnt.total } };
+        }
+        default: return { code: 400, message: '未知操作: ' + action };
+      }
+    }
+
+    async function pointsRoute(db, _, action, p) {
+      const page = p.page || 1, ps = p.pageSize || 20, skip = (page - 1) * ps;
+      switch (action) {
+        case 'adminListExchangeOrders': {
+          const q = {}; if (p.status) q.status = p.status;
+          const [cnt, res] = await Promise.all([db.collection('exchange_records').where(q).count(), db.collection('exchange_records').where(q).orderBy('createTime', 'desc').skip(skip).limit(ps).get()]);
+          return { code: 200, data: { list: res.data, total: cnt.total } };
+        }
+        case 'adminUpdateExchangeOrder': {
+          await db.collection('exchange_records').doc(p.orderId).update({ status: p.status, updateTime: new Date() });
+          return { code: 200, message: '更新成功' };
+        }
+        case 'adminListGoods': {
+          const res = await db.collection('shop_goods').orderBy('sortOrder', 'asc').limit(100).get();
+          return { code: 200, data: { list: res.data } };
+        }
+        case 'getGoodsDetail': {
+          const res = await db.collection('shop_goods').doc(p.goodsId).get();
+          return { code: 200, data: res.data[0] || res.data };
+        }
+        case 'adminSaveGoods': {
+          const d = p.data; delete d._id;
+          if (p.goodsId) { d.updateTime = new Date(); await db.collection('shop_goods').doc(p.goodsId).update(d); return { code: 200, message: '更新成功' }; }
+          d.createTime = new Date(); d.updateTime = new Date(); d.status = d.status || 'active';
+          const r = await db.collection('shop_goods').add(d); return { code: 200, data: { _id: r.id } };
+        }
+        case 'adminDeleteGoods': {
+          await db.collection('shop_goods').doc(p.goodsId).remove(); return { code: 200, message: '删除成功' };
+        }
+        default: return { code: 400, message: '未知操作: ' + action };
+      }
+    }
+
+    async function handleLogin() {
+      const u = document.getElementById('loginUser').value;
+      const p = document.getElementById('loginPwd').value;
+      if (!u || !p) { alert('请输入账号和密码'); return; }
+
+      const btn = document.querySelector('.login-box button');
+      const origText = btn.textContent;
+      btn.textContent = '登录中...';
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+
+      try {
+        const res = await callCloud('admin', { action: 'login', username: u, password: p });
+        console.log('login response:', JSON.stringify(res));
+        if (res.code === 200) {
+          adminInfo = res.data;
+          document.getElementById('loginPage').classList.add('hidden');
+          document.getElementById('mainLayout').classList.remove('hidden');
+          loadDashboard();
+          return;
+        } else if (res.code === 401) {
+          alert(res.message || '用户名或密码错误');
+        } else {
+          alert('登录失败: ' + (res.message || '服务器错误'));
+        }
+      } catch (e) {
+        console.error('handleLogin error:', e);
+        alert('登录异常: ' + e.message);
+      } finally {
+        btn.textContent = origText;
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      }
+    }
+
+    function handleLogout() {
+      adminInfo = null;
+      document.getElementById('mainLayout').classList.add('hidden');
+      document.getElementById('loginPage').classList.remove('hidden');
+    }
+
+    function switchPage(page) {
+      document.querySelectorAll('[id^="page-"]').forEach(el => el.classList.add('hidden'));
+      document.getElementById('page-' + page).classList.remove('hidden');
+      document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      const titles = { dashboard: '数据概览', verify: '认证审核', users: '用户管理', orders: '订单管理', announcements: '公告管理', health: '健康监测', sos: '紧急求助', supplements: '服务记录审核', certificates: '证书审核', pairs: '结对管理', checkins: '签到记录', shop: '积分商城', training: '培训内容', elderShop: '便民商城', elderOrders: '便民订单' };
+      document.getElementById('pageTitle').textContent = titles[page] || page;
+      currentPage = page;
+
+      switch(page) {
+        case 'dashboard': loadDashboard(); break;
+        case 'verify': loadPendingVerify(); break;
+        case 'users': loadUsers(); break;
+        case 'orders': loadOrders(); break;
+        case 'announcements': loadAnnouncements(); break;
+        case 'health': loadHealth(); break;
+        case 'sos': loadSOS(); break;
+        case 'supplements': loadSupplements(); break;
+        case 'certificates': loadCertificates(); break;
+        case 'pairs': loadPairs(); break;
+        case 'checkins': loadCheckins(); break;
+        case 'shop': loadShopGoods(); break;
+        case 'training': loadTrainingContent(); break;
+        case 'elderShop': loadElderGoods(); break;
+        case 'elderOrders': loadElderOrders(); loadElderOrderStats(); break;
+      }
+    }
+
+    async function loadDashboard() {
+      const [res, supRes, certRes] = await Promise.all([
+        callCloud('admin', { action: 'dashboard' }),
+        callCloud('admin', { action: 'listSupplements', status: 'pending' }),
+        callCloud('admin', { action: 'listCertificates', status: 'pending' })
+      ]);
+      const data = (res && res.code === 200) ? res.data : {
+        totalUsers: 0, volunteerCount: 0, elderCount: 0,
+        totalOrders: 0, pendingOrders: 0, completedOrders: 0,
+        activePairs: 0, unresolvedSOS: 0
+      };
+      Object.keys(data).forEach(k => {
+        const el = document.getElementById('s-' + k);
+        if (el) el.textContent = data[k];
+      });
+      const pendingCount = (supRes && supRes.code === 200 && supRes.data) ? supRes.data.total : 0;
+      document.getElementById('s-pendingSupplements').textContent = pendingCount;
+      const pendingCerts = (certRes && certRes.code === 200 && certRes.data) ? certRes.data.total : 0;
+      document.getElementById('s-pendingCerts').textContent = pendingCerts;
+    }
+
+    async function loadUsers(page = 1) {
+      const role = document.getElementById('userRoleFilter').value;
+      const verified = document.getElementById('userVerifiedFilter').value;
+      const keyword = document.getElementById('userKeyword').value;
+
+      const params = { action: 'listUsers', page };
+      if (role) params.role = role;
+      if (verified) params.verified = verified === 'true';
+      if (keyword) params.keyword = keyword;
+
+      const res = await callCloud('admin', params);
+      const users = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+
+      const tbody = document.getElementById('usersTable');
+      if (users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;">暂无用户数据</td></tr>';
+        return;
+      }
+      tbody.innerHTML = users.map(u => `
+        <tr>
+          <td>${u.nickname || '--'}</td>
+          <td><span class="tag ${u.role === 'elder' ? 'tag-orange' : 'tag-blue'}">${u.role === 'elder' ? '老年人' : '志愿者'}</span></td>
+          <td>${u.phone || '--'}</td>
+          <td><span class="tag ${u.verified ? 'tag-green' : 'tag-red'}">${u.verified ? '已认证' : '未认证'}</span></td>
+          <td>${u.totalServiceHours || 0}h</td>
+          <td>${formatTime(u.createTime) || '--'}</td>
+          <td>${!u.verified && u.role === 'volunteer' ? `<button class="btn btn-sm btn-primary" onclick="verifyUser('${u._id}', this)">审核通过</button>` : '--'}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadPendingVerify() {
+      const res = await callCloud('admin', { action: 'listPendingVerify' });
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+      const tbody = document.getElementById('verifyTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;padding:40px 0;">暂无待审核的志愿者认证申请</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(u => `
+        <tr>
+          <td><strong>${u.nickname || '未设置'}</strong></td>
+          <td>${u.phone || '未填写'}</td>
+          <td>${u.serviceArea || '未设置'}</td>
+          <td>${(u.serviceTypes || []).join('、') || '未选择'}</td>
+          <td>${formatTime(u.createTime)}</td>
+          <td>
+            <button class="btn btn-sm btn-primary" onclick="approveVerify('${u._id}', true, this)" style="margin-right:6px;">通过</button>
+            <button class="btn btn-sm btn-danger" onclick="approveVerify('${u._id}', false, this)">拒绝</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function approveVerify(userId, approved, btn) {
+      if (!approved) {
+        const reason = prompt('请输入拒绝原因（可选）：');
+        if (reason === null) return;
+      }
+      const origText = btn.textContent;
+      btn.textContent = '处理中...';
+      btn.disabled = true;
+      const params = { action: 'verifyVolunteer', userId, verified: approved };
+      if (!approved) params.rejectReason = '管理员审核未通过';
+      const res = await callCloud('admin', params);
+      if (res && res.code === 200) {
+        const tr = btn.closest('tr');
+        tr.style.opacity = '0.5';
+        tr.querySelector('td:last-child').innerHTML = `<span class="tag ${approved ? 'tag-green' : 'tag-red'}">${approved ? '已通过' : '已拒绝'}</span>`;
+      } else {
+        btn.textContent = origText;
+        btn.disabled = false;
+        alert(res?.message || '操作失败');
+      }
+    }
+
+    async function verifyUser(userId, btn) {
+      btn.textContent = '处理中...';
+      btn.disabled = true;
+      const res = await callCloud('admin', { action: 'verifyVolunteer', userId, verified: true });
+      if (res && res.code === 200) {
+        btn.textContent = '已通过';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-outline');
+        const statusCell = btn.parentElement.previousElementSibling.previousElementSibling.previousElementSibling;
+        statusCell.innerHTML = '<span class="tag tag-green">已认证</span>';
+      } else {
+        btn.textContent = '审核通过';
+        btn.disabled = false;
+        alert(res?.message || '操作失败');
+      }
+    }
+
+    async function loadOrders(page = 1) {
+      const status = document.getElementById('orderStatusFilter').value;
+      const params = { action: 'listOrders', page };
+      if (status) params.status = status;
+
+      const res = await callCloud('admin', params);
+      const orders = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+
+      const tbody = document.getElementById('ordersTable');
+      if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;">暂无订单数据</td></tr>';
+        return;
+      }
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td>${o.title || '--'}</td>
+          <td>${o.elderName || '--'}</td>
+          <td>${o.volunteerName || '暂无'}</td>
+          <td>${o.category || '帮扶'}</td>
+          <td><span class="tag ${STATUS_TAG[o.status] || 'tag-gray'}">${STATUS_MAP[o.status] || o.status}</span></td>
+          <td>${formatTime(o.createTime) || '--'}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadAnnouncements() {
+      const res = await callCloud('admin', { action: 'listAnnouncements' });
+      const anns = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+
+      const tbody = document.getElementById('announcementsTable');
+      if (anns.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;">暂无公告数据</td></tr>';
+        return;
+      }
+      tbody.innerHTML = anns.map(a => `
+        <tr>
+          <td>${a.title}</td>
+          <td><span class="tag ${a.type === 'activity' ? 'tag-blue' : 'tag-green'}">${a.type === 'activity' ? '活动' : '公告'}</span></td>
+          <td><span class="tag tag-green">${a.status === 'active' ? '生效' : '下架'}</span></td>
+          <td>${a.type === 'activity' ? `<a href="javascript:void(0)" onclick="viewSignups('${a._id}','${a.title}')" style="color:var(--primary);cursor:pointer;">${a.signupCount || 0} 人</a>` : '--'}</td>
+          <td>${a.isTop ? '是' : '否'}</td>
+          <td>${formatTime(a.createTime) || '--'}</td>
+          <td>
+            <button class="btn btn-sm btn-outline" onclick="editAnnouncement('${a._id}')">编辑</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteAnnouncement('${a._id}')">删除</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function viewSignups(activityId, title) {
+      const panel = document.getElementById('signupsPanel');
+      document.getElementById('signupsPanelTitle').textContent = `「${title}」报名列表`;
+      panel.style.display = 'block';
+      const res = await callCloud('admin', { action: 'listActivitySignups', activityId });
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+      const tbody = document.getElementById('signupsTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#999;padding:24px 0;">暂无报名</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(s => `
+        <tr>
+          <td>${s.userName || '--'}</td>
+          <td><span class="tag ${s.userRole === 'elder' ? 'tag-orange' : 'tag-blue'}">${s.userRole === 'elder' ? '老年人' : '志愿者'}</span></td>
+          <td>${formatTime(s.createTime)}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadHealth() {
+      loadHealthAlerts();
+      const res = await callCloud('admin', { action: 'listHealthData' });
+      const healthList = (res && res.code === 200) ? (res.data || []) : [];
+
+      const tbody = document.getElementById('healthTable');
+      if (healthList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#999;">暂无健康数据</td></tr>';
+        return;
+      }
+      tbody.innerHTML = healthList.map(h => {
+        const bpClass = (h.systolic > 140 || h.diastolic > 90) ? 'style="color:#c62828"' : '';
+        const boClass = h.bloodOxygen < 94 ? 'style="color:#c62828"' : '';
+        return `
+          <tr>
+            <td>${h.userId || '--'}</td>
+            <td ${bpClass}>${h.systolic || '--'}/${h.diastolic || '--'}</td>
+            <td>${h.heartRate || '--'}</td>
+            <td ${boClass}>${h.bloodOxygen || '--'}%</td>
+            <td>${h.bloodSugar || '--'}</td>
+            <td>${h.temperature || '--'}°C</td>
+            <td><span class="tag tag-blue">${h.source || '--'}</span></td>
+            <td>${formatTime(h.createTime)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function loadHealthAlerts() {
+      const res = await callCloud('admin', { action: 'getHealthAlerts' });
+      const alerts = (res && res.code === 200) ? (res.data || []) : [];
+      const tbody = document.getElementById('healthAlertsTable');
+      if (alerts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;padding:24px 0;">暂无健康预警</td></tr>';
+        return;
+      }
+      tbody.innerHTML = alerts.map(a => {
+        const levelTag = a.level === 'danger' ? 'tag-red' : 'tag-orange';
+        const levelText = a.level === 'danger' ? '危险' : '警告';
+        return `
+          <tr>
+            <td>${a.toUserId || '--'}</td>
+            <td>${a.content || '--'}</td>
+            <td><span class="tag ${levelTag}">${levelText}</span></td>
+            <td><span class="tag ${a.read ? 'tag-green' : 'tag-red'}">${a.read ? '已读' : '未读'}</span></td>
+            <td>${formatTime(a.createTime)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function loadSOS() {
+      const res = await callCloud('admin', { action: 'listSOS' });
+      const sosList = (res && res.code === 200) ? (res.data || []) : [];
+
+      const tbody = document.getElementById('sosTable');
+      if (sosList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">暂无紧急求助</td></tr>';
+        return;
+      }
+      tbody.innerHTML = sosList.map(s => `
+        <tr>
+          <td>${s.fromUserName || '--'}</td>
+          <td>${(s.content || '').substring(0, 40)}${(s.content || '').length > 40 ? '...' : ''}</td>
+          <td>${s.location ? `${s.location.lat.toFixed(4)}, ${s.location.lng.toFixed(4)}` : '--'}</td>
+          <td><span class="tag ${s.read ? 'tag-green' : 'tag-red'}">${s.read ? '已处理' : '待处理'}</span></td>
+          <td>${formatTime(s.createTime)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function showAnnouncementModal(data) {
+      document.getElementById('annId').value = data ? data._id : '';
+      document.getElementById('annTitle').value = data ? data.title : '';
+      document.getElementById('annType').value = data ? data.type : 'notice';
+      document.getElementById('annContent').value = data ? data.content : '';
+      document.getElementById('annIsTop').value = data ? String(data.isTop) : 'false';
+      document.getElementById('announcementModalTitle').textContent = data ? '编辑公告' : '新建公告';
+      document.getElementById('announcementModal').classList.remove('hidden');
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    async function saveAnnouncement() {
+      const title = document.getElementById('annTitle').value;
+      if (!title) { alert('请输入标题'); return; }
+      const id = document.getElementById('annId').value;
+      const data = {
+        title,
+        type: document.getElementById('annType').value,
+        content: document.getElementById('annContent').value,
+        isTop: document.getElementById('annIsTop').value === 'true'
+      };
+
+      let res;
+      if (id) {
+        res = await callCloud('admin', { action: 'updateAnnouncement', id, data });
+      } else {
+        res = await callCloud('admin', { action: 'createAnnouncement', data });
+      }
+      if (res && res.code === 200) {
+        closeModal('announcementModal');
+        loadAnnouncements();
+      } else {
+        alert(res?.message || '保存失败');
+      }
+    }
+
+    function editAnnouncement(id) {
+      showAnnouncementModal({ _id: id, title: '加载中...', type: 'notice', content: '', isTop: false });
+    }
+
+    async function deleteAnnouncement(id) {
+      if (!confirm('确定要删除这条公告吗？')) return;
+      const res = await callCloud('admin', { action: 'deleteAnnouncement', id });
+      if (res && res.code === 200) {
+        loadAnnouncements();
+      } else {
+        alert(res?.message || '删除失败');
+      }
+    }
+
+    const CERT_STATUS = { pending: '待审核', approved: '已通过', rejected: '已拒绝' };
+    const CERT_TAG = { pending: 'tag-orange', approved: 'tag-green', rejected: 'tag-red' };
+
+    async function loadCertificates() {
+      const status = document.getElementById('certStatusFilter').value;
+      const params = { action: 'listCertificates' };
+      if (status) params.status = status;
+
+      const res = await callCloud('admin', params);
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+
+      const tbody = document.getElementById('certificatesTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:40px 0;">暂无证书申请</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(c => `
+        <tr>
+          <td><strong>${c.userName || '--'}</strong></td>
+          <td>${c.serviceHours || 0}h</td>
+          <td>${c.totalOrders || 0}</td>
+          <td>${c.pairCount || 0}</td>
+          <td><span class="tag ${CERT_TAG[c.status] || 'tag-gray'}">${CERT_STATUS[c.status] || c.status}</span></td>
+          <td>${c.applyTime || formatTime(c.createTime)}</td>
+          <td>${c.status === 'pending' ? `
+            <button class="btn btn-sm btn-primary" onclick="handleCert('${c._id}', true, this)" style="margin-right:6px;">通过</button>
+            <button class="btn btn-sm btn-danger" onclick="handleCert('${c._id}', false, this)">拒绝</button>
+          ` : '--'}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function handleCert(certId, approved, btn) {
+      const origText = btn.textContent;
+      btn.textContent = '处理中...';
+      btn.disabled = true;
+      const res = await callCloud('admin', { action: 'approveCertificate', certId, approved });
+      if (res && res.code === 200) {
+        loadCertificates();
+      } else {
+        btn.textContent = origText;
+        btn.disabled = false;
+        alert(res?.message || '操作失败');
+      }
+    }
+
+    async function loadPairs() {
+      const status = document.getElementById('pairStatusFilter').value;
+      const params = { action: 'listPairs' };
+      if (status) params.status = status;
+
+      const res = await callCloud('admin', params);
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+
+      const tbody = document.getElementById('pairsTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;padding:40px 0;">暂无结对记录</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(p => `
+        <tr>
+          <td>${p.volunteerName || '--'}</td>
+          <td>${p.elderName || '--'}</td>
+          <td>${p.serviceCount || 0}</td>
+          <td>${p.pairDate || formatTime(p.createTime)}</td>
+          <td>${p.lastServiceTime ? formatTime(p.lastServiceTime) : '--'}</td>
+          <td><span class="tag ${p.status === 'active' ? 'tag-green' : 'tag-gray'}">${p.status === 'active' ? '进行中' : p.status}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadCheckins() {
+      const res = await callCloud('admin', { action: 'listCheckins' });
+      const list = (res && res.code === 200) ? (res.data || []) : [];
+
+      const tbody = document.getElementById('checkinsTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;padding:40px 0;">暂无签到记录</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(c => {
+        const typeText = c.type === 'arrive' ? '到达签到' : (c.type === 'leave' ? '结束签退' : c.type);
+        const typeTag = c.type === 'arrive' ? 'tag-blue' : 'tag-green';
+        const loc = (c.latitude && c.longitude) ? `${Number(c.latitude).toFixed(4)}, ${Number(c.longitude).toFixed(4)}` : '--';
+        return `
+          <tr>
+            <td>${c.userName || '--'}</td>
+            <td>${c.pairId ? c.pairId.substring(0, 12) + '...' : '--'}</td>
+            <td><span class="tag ${typeTag}">${typeText}</span></td>
+            <td>${loc}</td>
+            <td style="max-width:200px;word-break:break-all;">${c.serviceContent || '--'}</td>
+            <td>${formatTime(c.createTime)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    const SUPPLEMENT_STATUS = { pending: '待审核', approved: '已通过', rejected: '已拒绝' };
+    const SUPPLEMENT_TAG = { pending: 'tag-orange', approved: 'tag-green', rejected: 'tag-red' };
+
+    async function loadSupplements() {
+      const status = document.getElementById('supplementStatusFilter').value;
+      const params = { action: 'listSupplements' };
+      if (status) params.status = status;
+
+      const res = await callCloud('admin', params);
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+
+      const tbody = document.getElementById('supplementsTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;padding:40px 0;">暂无' + (status ? SUPPLEMENT_STATUS[status] || '' : '') + '服务记录</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(s => `
+        <tr>
+          <td>${s.userName || '--'}</td>
+          <td style="max-width:300px;word-break:break-all;">${s.content || '--'}</td>
+          <td><span class="tag ${SUPPLEMENT_TAG[s.status] || 'tag-gray'}">${SUPPLEMENT_STATUS[s.status] || s.status}</span></td>
+          <td>${formatTime(s.createTime)}</td>
+          <td>${s.reviewTime ? formatTime(s.reviewTime) : '--'}</td>
+          <td>${s.status === 'pending' ? `
+            <button class="btn btn-sm btn-primary" onclick="handleSupplement('${s._id}', true, this)" style="margin-right:6px;">通过</button>
+            <button class="btn btn-sm btn-danger" onclick="handleSupplement('${s._id}', false, this)">拒绝</button>
+          ` : '--'}</td>
+        </tr>
+      `).join('');
+    }
+
+    async function handleSupplement(recordId, approved, btn) {
+      const origText = btn.textContent;
+      btn.textContent = '处理中...';
+      btn.disabled = true;
+      const res = await callCloud('admin', { action: 'approveSupplementRecord', recordId, approved });
+      if (res && res.code === 200) {
+        const tr = btn.closest('tr');
+        tr.style.opacity = '0.5';
+        tr.querySelector('td:nth-child(3)').innerHTML = `<span class="tag ${approved ? 'tag-green' : 'tag-red'}">${approved ? '已通过' : '已拒绝'}</span>`;
+        tr.querySelector('td:last-child').innerHTML = `<span class="tag ${approved ? 'tag-green' : 'tag-red'}">${approved ? '已通过' : '已拒绝'}</span>`;
+      } else {
+        btn.textContent = origText;
+        btn.disabled = false;
+        alert(res?.message || '操作失败');
+      }
+    }
+
+    const EXCHANGE_STATUS = { pending: '待发放', shipped: '已发出', completed: '已完成' };
+    const EXCHANGE_TAG = { pending: 'tag-orange', shipped: 'tag-blue', completed: 'tag-green' };
+
+    async function loadExchangeOrders() {
+      const status = document.getElementById('exchangeStatusFilter').value;
+      const params = { action: 'adminListExchangeOrders' };
+      if (status) params.status = status;
+
+      const res = await callCloud('points', params);
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+
+      const tbody = document.getElementById('exchangeTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:40px 0;">暂无兑换订单</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(o => {
+        let actions = '--';
+        if (o.status === 'pending') {
+          actions = `<button class="btn btn-sm btn-primary" onclick="updateExchange('${o._id}', 'shipped', this)">标记发出</button>`;
+        } else if (o.status === 'shipped') {
+          actions = `<button class="btn btn-sm btn-primary" onclick="updateExchange('${o._id}', 'completed', this)">标记完成</button>`;
+        }
+        return `
+          <tr>
+            <td>${o.openid ? o.openid.substring(0, 10) + '...' : '--'}</td>
+            <td>${o.goodsName || '--'}</td>
+            <td>${o.quantity || 1}</td>
+            <td>${o.totalPoints || 0}</td>
+            <td><span class="tag ${EXCHANGE_TAG[o.status] || 'tag-gray'}">${EXCHANGE_STATUS[o.status] || o.status}</span></td>
+            <td>${formatTime(o.createTime)}</td>
+            <td>${actions}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function updateExchange(orderId, status, btn) {
+      const origText = btn.textContent;
+      btn.textContent = '处理中...';
+      btn.disabled = true;
+      const res = await callCloud('points', { action: 'adminUpdateExchangeOrder', orderId, status });
+      if (res && res.code === 200) {
+        loadExchangeOrders();
+      } else {
+        btn.textContent = origText;
+        btn.disabled = false;
+        alert(res?.message || '操作失败');
+      }
+    }
+
+    const CATEGORY_MAP = { certificate: '公益证书', gift: '纪念品', course: '培训课程', other: '其他' };
+
+    async function loadShopGoods() {
+      loadExchangeOrders();
+      const res = await callCloud('points', { action: 'adminListGoods' });
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+      const tbody = document.getElementById('shopTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:40px 0;">暂无商品，点击右上角新增</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(g => `
+        <tr>
+          <td><strong>${g.name || '--'}</strong></td>
+          <td>${CATEGORY_MAP[g.category] || g.category || '--'}</td>
+          <td>${g.pointsPrice || 0}</td>
+          <td>${g.stock || 0}</td>
+          <td>${g.exchangeCount || 0}</td>
+          <td><span class="tag ${g.status === 'active' ? 'tag-green' : 'tag-gray'}">${g.status === 'active' ? '上架' : '下架'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline" onclick="editGoods('${g._id}')" style="margin-right:6px;">编辑</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteGoods('${g._id}')">删除</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function showGoodsModal(goods) {
+      document.getElementById('goodsModalTitle').textContent = goods ? '编辑商品' : '新增商品';
+      document.getElementById('goodsId').value = goods ? goods._id : '';
+      document.getElementById('goodsName').value = goods ? goods.name : '';
+      document.getElementById('goodsCategory').value = goods ? goods.category : 'certificate';
+      document.getElementById('goodsPrice').value = goods ? goods.pointsPrice : '';
+      document.getElementById('goodsStock').value = goods ? goods.stock : '';
+      document.getElementById('goodsDesc').value = goods ? goods.description : '';
+      document.getElementById('goodsDetail').value = goods ? goods.detail : '';
+      document.getElementById('goodsImage').value = goods ? (goods.image || '') : '';
+      document.getElementById('goodsImageFile').value = '';
+      document.getElementById('uploadLabel').textContent = '点击上传图片';
+      document.getElementById('uploadProgress').style.display = 'none';
+      const preview = document.getElementById('goodsImagePreview');
+      if (goods && goods.image) {
+        document.getElementById('goodsImagePreviewImg').src = goods.image;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+      document.getElementById('goodsModal').classList.remove('hidden');
+    }
+
+    async function handleImageUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { alert('图片不能超过5MB'); input.value = ''; return; }
+
+      const preview = document.getElementById('goodsImagePreview');
+      const previewImg = document.getElementById('goodsImagePreviewImg');
+      const progress = document.getElementById('uploadProgress');
+      const label = document.getElementById('uploadLabel');
+
+      previewImg.src = URL.createObjectURL(file);
+      preview.style.display = 'block';
+      label.textContent = '上传中...';
+      progress.style.display = 'block';
+      progress.textContent = '正在上传到云存储...';
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const resp = await fetch('/api/upload', { method: 'POST', body: formData });
+        const result = await resp.json();
+        if (result.code === 200) {
+          document.getElementById('goodsImage').value = result.url;
+          label.textContent = '重新上传';
+          progress.textContent = '上传成功';
+          progress.style.color = 'var(--primary)';
+        } else {
+          throw new Error(result.message || '上传失败');
+        }
+      } catch (e) {
+        console.error('Upload failed:', e);
+        label.textContent = '上传失败，点击重试';
+        progress.textContent = '错误: ' + e.message;
+        progress.style.color = 'var(--danger)';
+      }
+    }
+
+    async function editGoods(id) {
+      showGoodsModal({ _id: id, name: '加载中...', category: 'other', pointsPrice: 0, stock: 0, description: '', detail: '', image: '' });
+      const res = await callCloud('points', { action: 'getGoodsDetail', goodsId: id });
+      if (res && res.code === 200) {
+        showGoodsModal(res.data);
+      }
+    }
+
+    async function saveGoods() {
+      const name = document.getElementById('goodsName').value.trim();
+      if (!name) { alert('请输入商品名称'); return; }
+      const id = document.getElementById('goodsId').value;
+      const goodsData = {
+        name,
+        category: document.getElementById('goodsCategory').value,
+        pointsPrice: parseInt(document.getElementById('goodsPrice').value) || 0,
+        stock: parseInt(document.getElementById('goodsStock').value) || 0,
+        description: document.getElementById('goodsDesc').value,
+        detail: document.getElementById('goodsDetail').value,
+        image: document.getElementById('goodsImage').value
+      };
+      const params = { action: 'adminSaveGoods', goodsData };
+      if (id) params.goodsId = id;
+      const res = await callCloud('points', params);
+      if (res && res.code === 200) {
+        closeModal('goodsModal');
+        loadShopGoods();
+      } else {
+        alert(res?.message || '保存失败');
+      }
+    }
+
+    async function deleteGoods(id) {
+      if (!confirm('确定要删除这个商品吗？')) return;
+      const res = await callCloud('points', { action: 'adminDeleteGoods', goodsId: id });
+      if (res && res.code === 200) {
+        loadShopGoods();
+      } else {
+        alert(res?.message || '删除失败');
+      }
+    }
+
+    // ===== Training Content =====
+    const TRAINING_TYPES = { required_course: '必修课程', optional_course: '选修课程', expert: '专家', case: '案例', template: '模板', elder_course: '老年课程' };
+    let trainingCache = [];
+
+    async function loadTrainingContent() {
+      const type = document.getElementById('trainingTypeFilter').value;
+      const params = { action: 'listTrainingContent' };
+      if (type) params.type = type;
+      const res = await callCloud('admin', params);
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+      trainingCache = list;
+      const tbody = document.getElementById('trainingTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;padding:40px 0;">暂无内容，点击右上角新增</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(t => `
+        <tr>
+          <td><strong>${t.name || t.title || '--'}</strong></td>
+          <td><span class="tag tag-blue">${TRAINING_TYPES[t.type] || t.type}</span></td>
+          <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.desc || t.summary || t.description || '--'}</td>
+          <td>${t.sortOrder || 100}</td>
+          <td><span class="tag ${t.status === 'active' ? 'tag-green' : 'tag-gray'}">${t.status === 'active' ? '启用' : '禁用'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline" onclick="editTraining('${t._id}')" style="margin-right:6px;">编辑</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteTraining('${t._id}')">删除</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function onTrainingTypeChange() {
+      const type = document.getElementById('trainingType').value;
+      document.getElementById('trainingDurationGroup').style.display = (type === 'required_course' || type === 'optional_course' || type === 'elder_course') ? '' : 'none';
+      document.getElementById('trainingFieldGroup').style.display = type === 'expert' ? '' : 'none';
+      document.getElementById('trainingGroupTitleGroup').style.display = type === 'template' ? '' : 'none';
+      document.getElementById('trainingCommunityGroup').style.display = type === 'case' ? '' : 'none';
+      document.getElementById('trainingTagsGroup').style.display = type === 'case' ? '' : 'none';
+      const nameLabel = document.getElementById('trainingNameLabel');
+      nameLabel.textContent = type === 'case' ? '标题' : '名称';
+    }
+
+    function showTrainingModal(item) {
+      document.getElementById('trainingModalTitle').textContent = item ? '编辑培训内容' : '新增培训内容';
+      document.getElementById('trainingId').value = item ? item._id : '';
+      document.getElementById('trainingType').value = item ? item.type : 'required_course';
+      document.getElementById('trainingName').value = item ? (item.name || item.title || '') : '';
+      document.getElementById('trainingDesc').value = item ? (item.desc || item.summary || item.description || '') : '';
+      document.getElementById('trainingDuration').value = item ? (item.duration || '') : '';
+      document.getElementById('trainingField').value = item ? (item.field || '') : '';
+      document.getElementById('trainingGroupTitle').value = item ? (item.groupTitle || '') : '';
+      document.getElementById('trainingCommunity').value = item ? (item.community || '') : '';
+      document.getElementById('trainingTags').value = item ? (Array.isArray(item.tags) ? item.tags.join(',') : (item.tags || '')) : '';
+      document.getElementById('trainingSortOrder').value = item ? (item.sortOrder || 100) : 100;
+      onTrainingTypeChange();
+      document.getElementById('trainingModal').classList.remove('hidden');
+    }
+
+    function editTraining(id) {
+      const item = trainingCache.find(t => t._id === id);
+      if (item) showTrainingModal(item);
+    }
+
+    async function saveTrainingContent() {
+      const name = document.getElementById('trainingName').value.trim();
+      if (!name) { alert('请输入名称'); return; }
+      const type = document.getElementById('trainingType').value;
+      const id = document.getElementById('trainingId').value;
+      const contentData = { type, desc: document.getElementById('trainingDesc').value, sortOrder: parseInt(document.getElementById('trainingSortOrder').value) || 100 };
+      if (type === 'case') {
+        contentData.title = name;
+        contentData.summary = contentData.desc;
+        contentData.community = document.getElementById('trainingCommunity').value;
+        const tagsStr = document.getElementById('trainingTags').value.trim();
+        contentData.tags = tagsStr ? tagsStr.split(',').map(s => s.trim()).filter(Boolean) : [];
+      } else {
+        contentData.name = name;
+      }
+      if (type === 'required_course' || type === 'optional_course' || type === 'elder_course') contentData.duration = document.getElementById('trainingDuration').value;
+      if (type === 'expert') contentData.field = document.getElementById('trainingField').value;
+      if (type === 'template') contentData.groupTitle = document.getElementById('trainingGroupTitle').value;
+      const params = { action: 'saveTrainingContent', contentData };
+      if (id) params.contentId = id;
+      const res = await callCloud('admin', params);
+      if (res && res.code === 200) { closeModal('trainingModal'); loadTrainingContent(); }
+      else alert(res?.message || '保存失败');
+    }
+
+    async function deleteTraining(id) {
+      if (!confirm('确定要删除吗？')) return;
+      const res = await callCloud('admin', { action: 'deleteTrainingContent', contentId: id });
+      if (res && res.code === 200) loadTrainingContent();
+      else alert(res?.message || '删除失败');
+    }
+
+    // ===== Elder Shop =====
+    const ELDER_CATEGORY = { grain_oil: '粮油米面', daily: '日用百货', food: '食品饮料', health_care: '保健用品', other: '其他' };
+    let elderGoodsCache = [];
+
+    async function loadElderGoods() {
+      const category = document.getElementById('elderGoodsCategoryFilter').value;
+      const params = { action: 'listElderGoods' };
+      if (category) params.category = category;
+      const res = await callCloud('admin', params);
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+      elderGoodsCache = list;
+      const tbody = document.getElementById('elderShopTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:40px 0;">暂无商品，点击右上角新增</td></tr>';
+        return;
+      }
+      tbody.innerHTML = list.map(g => `
+        <tr>
+          <td>${g.image ? '<img src="' + g.image + '" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">' : '<span style="color:#ccc;">无图</span>'}</td>
+          <td><strong>${g.name || '--'}</strong><br><span style="font-size:12px;color:#999;">${g.spec || ''}</span></td>
+          <td>${ELDER_CATEGORY[g.category] || g.category || '--'}</td>
+          <td>¥${(g.price || 0).toFixed(2)}</td>
+          <td>${g.stock || 0}</td>
+          <td><span class="tag ${g.status === 'active' ? 'tag-green' : 'tag-gray'}">${g.status === 'active' ? '上架' : '下架'}</span></td>
+          <td>
+            <button class="btn btn-sm btn-outline" onclick="editElderGoods('${g._id}')" style="margin-right:6px;">编辑</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteElderGoods('${g._id}')">删除</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function showElderGoodsModal(goods) {
+      document.getElementById('elderGoodsModalTitle').textContent = goods ? '编辑商品' : '新增商品';
+      document.getElementById('elderGoodsId').value = goods ? goods._id : '';
+      document.getElementById('elderGoodsName').value = goods ? goods.name : '';
+      document.getElementById('elderGoodsCategory').value = goods ? goods.category : 'grain_oil';
+      document.getElementById('elderGoodsPrice').value = goods ? goods.price : '';
+      document.getElementById('elderGoodsStock').value = goods ? goods.stock : '';
+      document.getElementById('elderGoodsDesc').value = goods ? goods.description : '';
+      document.getElementById('elderGoodsSpec').value = goods ? (goods.spec || '') : '';
+      document.getElementById('elderGoodsImage').value = goods ? (goods.image || '') : '';
+      document.getElementById('elderGoodsImageFile').value = '';
+      document.getElementById('elderUploadLabel').textContent = '点击上传图片';
+      document.getElementById('elderUploadProgress').style.display = 'none';
+      const preview = document.getElementById('elderGoodsImagePreview');
+      if (goods && goods.image) {
+        document.getElementById('elderGoodsImagePreviewImg').src = goods.image;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+      document.getElementById('elderGoodsModal').classList.remove('hidden');
+    }
+
+    function editElderGoods(id) {
+      const goods = elderGoodsCache.find(g => g._id === id);
+      if (goods) showElderGoodsModal(goods);
+    }
+
+    async function handleElderImageUpload(input) {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { alert('图片不能超过5MB'); input.value = ''; return; }
+      const preview = document.getElementById('elderGoodsImagePreview');
+      const previewImg = document.getElementById('elderGoodsImagePreviewImg');
+      const progress = document.getElementById('elderUploadProgress');
+      const label = document.getElementById('elderUploadLabel');
+      previewImg.src = URL.createObjectURL(file);
+      preview.style.display = 'block';
+      label.textContent = '上传中...';
+      progress.style.display = 'block';
+      progress.textContent = '正在上传...';
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const resp = await fetch('/api/upload', { method: 'POST', body: formData });
+        const result = await resp.json();
+        if (result.code === 200) {
+          document.getElementById('elderGoodsImage').value = result.url;
+          label.textContent = '重新上传';
+          progress.textContent = '上传成功';
+          progress.style.color = 'var(--primary)';
+        } else { throw new Error(result.message || '上传失败'); }
+      } catch (e) {
+        label.textContent = '上传失败，点击重试';
+        progress.textContent = '错误: ' + e.message;
+        progress.style.color = 'var(--danger)';
+      }
+    }
+
+    async function saveElderGoods() {
+      const name = document.getElementById('elderGoodsName').value.trim();
+      if (!name) { alert('请输入商品名称'); return; }
+      const id = document.getElementById('elderGoodsId').value;
+      const goodsData = {
+        name,
+        category: document.getElementById('elderGoodsCategory').value,
+        price: parseFloat(document.getElementById('elderGoodsPrice').value) || 0,
+        stock: parseInt(document.getElementById('elderGoodsStock').value) || 0,
+        description: document.getElementById('elderGoodsDesc').value,
+        spec: document.getElementById('elderGoodsSpec').value,
+        image: document.getElementById('elderGoodsImage').value
+      };
+      const params = { action: 'saveElderGoods', goodsData };
+      if (id) params.goodsId = id;
+      const res = await callCloud('admin', params);
+      if (res && res.code === 200) { closeModal('elderGoodsModal'); loadElderGoods(); }
+      else alert(res?.message || '保存失败');
+    }
+
+    async function deleteElderGoods(id) {
+      if (!confirm('确定要删除这个商品吗？')) return;
+      const res = await callCloud('admin', { action: 'deleteElderGoods', goodsId: id });
+      if (res && res.code === 200) loadElderGoods();
+      else alert(res?.message || '删除失败');
+    }
+
+    // ===== Elder Shop Orders =====
+    const EO_STATUS = { pending_accept: '待接单', accepted: '已接单', delivering: '配送中', delivered: '已送达', completed: '已完成', cancelled: '已取消' };
+    const EO_STATUS_TAG = { pending_accept: 'tag-orange', accepted: 'tag-blue', delivering: 'tag-blue', delivered: 'tag-green', completed: 'tag-green', cancelled: 'tag-gray' };
+    let eoPage = 1;
+
+    async function loadElderOrderStats() {
+      const res = await callCloud('admin', { action: 'elderShopStats' });
+      if (res && res.code === 200) {
+        const d = res.data;
+        document.getElementById('eoTotal').textContent = d.totalOrders || 0;
+        document.getElementById('eoPending').textContent = d.pendingOrders || 0;
+        document.getElementById('eoDelivering').textContent = d.deliveringOrders || 0;
+        document.getElementById('eoCompleted').textContent = d.completedOrders || 0;
+        document.getElementById('eoIncome').textContent = '¥' + (d.totalIncome || 0).toFixed(2);
+        document.getElementById('eoUnpaid').textContent = '¥' + (d.unpaidAmount || 0).toFixed(2);
+      }
+    }
+
+    async function loadElderOrders(page) {
+      if (page) eoPage = page;
+      const orderStatus = document.getElementById('eoStatusFilter').value;
+      const payStatus = document.getElementById('eoPayFilter').value;
+      const params = { action: 'listElderShopOrders', page: eoPage, pageSize: 15 };
+      if (orderStatus) params.orderStatus = orderStatus;
+      if (payStatus) params.payStatus = payStatus;
+
+      const res = await callCloud('admin', params);
+      const list = (res && res.code === 200 && res.data) ? (res.data.list || []) : [];
+      const total = (res && res.data) ? (res.data.total || 0) : 0;
+
+      const tbody = document.getElementById('elderOrdersTable');
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#999;padding:40px 0;">暂无订单</td></tr>';
+        document.getElementById('elderOrdersPagination').innerHTML = '';
+        return;
+      }
+
+      tbody.innerHTML = list.map(o => `
+        <tr>
+          <td style="font-size:12px;color:#999;">${o.orderNo || '--'}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              ${o.goodsImage ? '<img src="' + o.goodsImage + '" style="width:36px;height:36px;object-fit:cover;border-radius:4px;">' : ''}
+              <span>${o.goodsName || '--'}</span>
+            </div>
+          </td>
+          <td>x${o.quantity || 1}</td>
+          <td style="font-weight:600;color:#E8573A;">¥${(o.totalAmount || 0).toFixed(2)}</td>
+          <td>${o.elderName || '--'}<br><span style="font-size:12px;color:#999;">${o.elderPhone || ''}</span></td>
+          <td>${o.volunteerName || '<span style="color:#ccc;">--</span>'}</td>
+          <td><span class="tag ${EO_STATUS_TAG[o.orderStatus] || 'tag-gray'}">${EO_STATUS[o.orderStatus] || o.orderStatus}</span></td>
+          <td><span class="tag ${o.payStatus === 'paid' ? 'tag-green' : 'tag-orange'}">${o.payStatus === 'paid' ? '已收款' : '待收款'}</span></td>
+          <td>
+            ${o.orderStatus === 'pending_accept' ? '<button class="btn btn-sm btn-danger" onclick="cancelElderOrder(\'' + o._id + '\')">取消</button>' : ''}
+            ${o.orderStatus === 'delivered' && o.payStatus !== 'paid' ? '<button class="btn btn-sm btn-primary" onclick="markElderOrderPaid(\'' + o._id + '\')">标记收款</button>' : ''}
+          </td>
+        </tr>
+      `).join('');
+
+      const totalPages = Math.ceil(total / 15);
+      let paginationHtml = '';
+      paginationHtml += '<button ' + (eoPage <= 1 ? 'disabled' : '') + ' onclick="loadElderOrders(' + (eoPage - 1) + ')">上一页</button>';
+      for (let i = 1; i <= totalPages && i <= 10; i++) {
+        paginationHtml += '<button class="' + (i === eoPage ? 'active' : '') + '" onclick="loadElderOrders(' + i + ')">' + i + '</button>';
+      }
+      paginationHtml += '<button ' + (eoPage >= totalPages ? 'disabled' : '') + ' onclick="loadElderOrders(' + (eoPage + 1) + ')">下一页</button>';
+      document.getElementById('elderOrdersPagination').innerHTML = paginationHtml;
+    }
+
+    async function cancelElderOrder(orderId) {
+      if (!confirm('确定取消该订单？取消后库存将恢复。')) return;
+      const res = await callCloud('admin', { action: 'updateElderShopOrder', orderId, updateData: { orderStatus: 'cancelled' } });
+      if (res && res.code === 200) { loadElderOrders(); loadElderOrderStats(); }
+      else alert(res?.message || '操作失败');
+    }
+
+    async function markElderOrderPaid(orderId) {
+      if (!confirm('确认该订单已收款？')) return;
+      const res = await callCloud('admin', { action: 'updateElderShopOrder', orderId, updateData: { payStatus: 'paid', orderStatus: 'completed' } });
+      if (res && res.code === 200) { loadElderOrders(); loadElderOrderStats(); }
+      else alert(res?.message || '操作失败');
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+{"_id":"ann001","title":"五月社区公益活动招募","type":"activity","content":"本月将在幸福社区举办\"暖心陪伴\"公益活动，招募志愿者10名，为社区独居老人提供上门陪伴服务。","isTop":true,"status":"active","createTime":{"$date":"2026-05-01T08:00:00.000Z"}}
+{"_id":"ann002","title":"平台新功能上线通知","type":"notice","content":"积分商城功能已正式上线！志愿者可通过服务积累积分，兑换公益证书、纪念品等奖励。","isTop":false,"status":"active","createTime":{"$date":"2026-05-10T08:00:00.000Z"}}
+{"_id":"ann003","title":"夏季高温关怀提醒","type":"notice","content":"近期气温持续升高，请志愿者在服务过程中注意老人防暑降温，如有异常及时联系平台。","isTop":true,"status":"active","createTime":{"$date":"2026-05-20T08:00:00.000Z"}}

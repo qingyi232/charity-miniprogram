@@ -1,0 +1,101 @@
+<view class="health-page">
+  <view class="health-summary">
+    <view class="summary-title">健康监测数据</view>
+    <view class="summary-time">{{latestTime || '暂无数据'}}</view>
+  </view>
+
+  <!-- 核心指标卡片 -->
+  <view class="metrics-grid">
+    <view class="metric-card bp-card">
+      <image class="metric-icon" src="/static/icons/heart.svg" mode="aspectFit" />
+      <text class="metric-label">血压</text>
+      <text class="metric-value">{{latest.systolic || '--'}}/{{latest.diastolic || '--'}}</text>
+      <text class="metric-unit">mmHg</text>
+      <view class="metric-status {{bpStatus}}">{{bpStatusText}}</view>
+    </view>
+
+    <view class="metric-card hr-card">
+      <image class="metric-icon" src="/static/icons/heartbeat.svg" mode="aspectFit" />
+      <text class="metric-label">心率</text>
+      <text class="metric-value">{{latest.heartRate || '--'}}</text>
+      <text class="metric-unit">bpm</text>
+      <view class="metric-status {{hrStatus}}">{{hrStatusText}}</view>
+    </view>
+
+    <view class="metric-card bo-card">
+      <image class="metric-icon" src="/static/icons/lungs.svg" mode="aspectFit" />
+      <text class="metric-label">血氧</text>
+      <text class="metric-value">{{latest.bloodOxygen || '--'}}</text>
+      <text class="metric-unit">%</text>
+      <view class="metric-status {{boStatus}}">{{boStatusText}}</view>
+    </view>
+
+    <view class="metric-card bs-card">
+      <image class="metric-icon" src="/static/icons/blood.svg" mode="aspectFit" />
+      <text class="metric-label">血糖</text>
+      <text class="metric-value">{{latest.bloodSugar || '--'}}</text>
+      <text class="metric-unit">mmol/L</text>
+      <view class="metric-status {{bsStatus}}">{{bsStatusText}}</view>
+    </view>
+
+    <view class="metric-card temp-card">
+      <image class="metric-icon" src="/static/icons/thermometer.svg" mode="aspectFit" />
+      <text class="metric-label">体温</text>
+      <text class="metric-value">{{latest.temperature || '--'}}</text>
+      <text class="metric-unit">°C</text>
+      <view class="metric-status {{tempStatus}}">{{tempStatusText}}</view>
+    </view>
+  </view>
+
+  <!-- 趋势曲线图 -->
+  <view class="chart-section">
+    <view class="section-header">
+      <text class="section-title">趋势曲线</text>
+      <view class="tab-row">
+        <text class="tab {{activeTab === 7 ? 'active' : ''}}" bindtap="switchTab" data-days="7">近7天</text>
+        <text class="tab {{activeTab === 30 ? 'active' : ''}}" bindtap="switchTab" data-days="30">近30天</text>
+      </view>
+    </view>
+    <view class="chart-metric-tabs">
+      <text class="chart-tab {{chartMetric === 'bp' ? 'active' : ''}}" bindtap="switchMetric" data-metric="bp">血压</text>
+      <text class="chart-tab {{chartMetric === 'hr' ? 'active' : ''}}" bindtap="switchMetric" data-metric="hr">心率</text>
+      <text class="chart-tab {{chartMetric === 'bo' ? 'active' : ''}}" bindtap="switchMetric" data-metric="bo">血氧</text>
+      <text class="chart-tab {{chartMetric === 'temp' ? 'active' : ''}}" bindtap="switchMetric" data-metric="temp">体温</text>
+    </view>
+    <view class="chart-container">
+      <canvas canvas-id="healthChart" id="healthChart" class="health-canvas" type="2d"></canvas>
+      <view wx:if="{{historyList.length === 0}}" class="chart-empty">
+        <text>暂无数据</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史记录 -->
+  <view class="history-section">
+    <view class="section-header">
+      <text class="section-title">详细记录</text>
+    </view>
+
+    <view class="history-list">
+      <view class="history-item" wx:for="{{historyList}}" wx:key="_id">
+        <text class="history-date">{{item.dateStr}}</text>
+        <view class="history-data">
+          <text class="hd-item" wx:if="{{item.systolic}}">血压 {{item.systolic}}/{{item.diastolic}}</text>
+          <text class="hd-item" wx:if="{{item.heartRate}}">心率 {{item.heartRate}}</text>
+          <text class="hd-item" wx:if="{{item.bloodOxygen}}">血氧 {{item.bloodOxygen}}%</text>
+          <text class="hd-item" wx:if="{{item.temperature}}">体温 {{item.temperature}}°C</text>
+        </view>
+        <text class="history-source">{{item.source === 'device' ? '设备' : '手动'}}</text>
+      </view>
+      <view wx:if="{{historyList.length === 0}}" class="empty-history">
+        <text>暂无历史数据</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="tip-card">
+    <image class="tip-icon" src="/static/icons/lightbulb.svg" mode="aspectFit" />
+    <text class="tip-text">健康数据由医疗监测设备自动上传，无需手动操作。如有异常会自动通知您的结对志愿者。</text>
+  </view>
+
+</view>

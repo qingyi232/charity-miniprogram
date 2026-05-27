@@ -1,0 +1,17 @@
+.history-page { min-height: 100vh; background: #f5f5f5; padding: 20rpx 24rpx; }
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 12rpx;
+}
+.history-left { flex: 1; }
+.history-reason { font-size: 28rpx; color: #333; display: block; }
+.history-time { font-size: 22rpx; color: #999; display: block; margin-top: 6rpx; }
+.history-amount { font-size: 32rpx; font-weight: 700; flex-shrink: 0; }
+.history-amount.earn { color: #4CAF50; }
+.history-amount.spend { color: #FF6B35; }
+.empty-state { text-align: center; padding: 120rpx 0; color: #999; font-size: 28rpx; }

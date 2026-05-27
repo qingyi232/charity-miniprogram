@@ -1,0 +1,84 @@
+<view class="activity-page">
+  <!-- 顶部横幅 -->
+  <view class="banner">
+    <view class="banner-content">
+      <text class="banner-title">公益活动中心</text>
+      <text class="banner-sub">参与公益，温暖你我</text>
+    </view>
+    <image class="banner-illust" src="/static/icons/handshake.svg" mode="aspectFit" />
+  </view>
+
+  <!-- 活动分类筛选 -->
+  <view class="filter-tabs">
+    <text class="filter-tab {{activeFilter === 'all' ? 'active' : ''}}"
+          bindtap="switchFilter" data-filter="all">全部</text>
+    <text class="filter-tab {{activeFilter === 'activity' ? 'active' : ''}}"
+          bindtap="switchFilter" data-filter="activity">公益活动</text>
+    <text class="filter-tab {{activeFilter === 'notice' ? 'active' : ''}}"
+          bindtap="switchFilter" data-filter="notice">通知公告</text>
+  </view>
+
+  <scroll-view scroll-y class="activity-scroll" enhanced show-scrollbar="{{false}}"
+               bindscrolltolower="loadMore">
+    <view class="scroll-inner">
+    <!-- 活动卡片列表 -->
+    <view class="activity-card" wx:for="{{activityList}}" wx:key="_id"
+          bindtap="goDetail" data-item="{{item}}">
+      <view class="card-top">
+        <view class="card-type-tag {{item.type === 'activity' ? 'type-activity' : 'type-notice'}}">
+          <text>{{item.type === 'activity' ? '活动' : '公告'}}</text>
+        </view>
+        <text wx:if="{{item.isTop}}" class="top-tag">置顶</text>
+      </view>
+      <text class="card-title">{{item.title}}</text>
+      <text class="card-content">{{item.content || '暂无详情'}}</text>
+
+      <view wx:if="{{item.type === 'activity'}}" class="activity-meta">
+        <view class="meta-row" wx:if="{{item.activityDate}}">
+          <image class="meta-icon" src="/static/icons/clock.svg" mode="aspectFit" />
+          <text class="meta-text">{{item.activityDate}}</text>
+        </view>
+        <view class="meta-row" wx:if="{{item.activityLocation}}">
+          <image class="meta-icon" src="/static/icons/location.svg" mode="aspectFit" />
+          <text class="meta-text">{{item.activityLocation}}</text>
+        </view>
+        <view class="meta-row">
+          <image class="meta-icon" src="/static/icons/user.svg" mode="aspectFit" />
+          <text class="meta-text">已报名 {{item.signupCount || 0}} 人{{item.maxSignup ? ' / 限' + item.maxSignup + '人' : ''}}</text>
+        </view>
+      </view>
+
+      <view class="card-footer">
+        <text class="card-time">{{item.createTimeStr}}</text>
+        <view wx:if="{{item.type === 'activity'}}" class="signup-btn-wrap">
+          <view wx:if="{{item.hasSignup}}" class="signed-tag">
+            <image class="inline-icon" src="/static/icons/check.svg" mode="aspectFit" />
+            <text>已报名</text>
+          </view>
+          <view wx:elif="{{item.maxSignup && item.signupCount >= item.maxSignup}}" class="full-tag">
+            <text>已满员</text>
+          </view>
+          <view wx:else class="signup-btn" catchtap="handleSignup" data-id="{{item._id}}">
+            <text>立即报名</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{activityList.length === 0}}" class="empty-state">
+      <image class="empty-icon" src="/static/icons/bell.svg" mode="aspectFit" />
+      <text class="empty-text">暂无活动信息</text>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading-tip">
+      <text>加载中...</text>
+    </view>
+
+    <view wx:if="{{noMore && activityList.length > 0}}" class="no-more-tip">
+      <text>没有更多了</text>
+    </view>
+
+    <view class="bottom-space"></view>
+    </view>
+  </scroll-view>
+</view>

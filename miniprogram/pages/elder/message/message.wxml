@@ -1,0 +1,52 @@
+<view class="message-page">
+  <view class="page-header">
+    <text class="page-title">消息</text>
+  </view>
+
+  <scroll-view scroll-y class="message-scroll">
+    <view class="scroll-inner">
+    <view class="msg-item" wx:for="{{messageList}}" wx:key="_id" bindtap="goChat" data-item="{{item}}">
+      <view class="msg-avatar-wrap">
+        <image class="msg-avatar" src="{{item.avatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+        <view wx:if="{{item.unread > 0}}" class="msg-dot">{{item.unread}}</view>
+      </view>
+      <view class="msg-content">
+        <view class="msg-top">
+          <text class="msg-name">{{item.name}}</text>
+          <text class="msg-time">{{item.timeStr}}</text>
+        </view>
+        <text class="msg-preview">{{item.lastMessage || '暂无消息'}}</text>
+      </view>
+    </view>
+
+    <!-- 健康预警（红色高亮） -->
+    <view class="alert-section" wx:if="{{healthAlerts.length > 0}}">
+      <view class="alert-header">
+        <image class="alert-icon" src="/static/icons/heartbeat.svg" mode="aspectFit" />
+        <text class="alert-title">健康预警</text>
+      </view>
+      <view class="alert-item" wx:for="{{healthAlerts}}" wx:key="_id">
+        <view class="alert-dot {{item.level === 'danger' ? 'danger' : 'warning'}}"></view>
+        <view class="alert-content">
+          <text class="alert-text">{{item.content}}</text>
+          <text class="alert-time">{{item.timeStr}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 系统通知 -->
+    <view class="system-msg" wx:for="{{systemMessages}}" wx:key="_id">
+      <image class="system-icon" src="/static/icons/bell.svg" mode="aspectFit" />
+      <view class="system-content">
+        <text class="system-text">{{item.content}}</text>
+        <text class="system-time">{{item.timeStr}}</text>
+      </view>
+    </view>
+
+    <view wx:if="{{messageList.length === 0 && systemMessages.length === 0}}" class="empty-state">
+      <image class="empty-icon" src="/static/icons/chat.svg" mode="aspectFit" />
+      <text class="empty-text">暂无消息</text>
+    </view>
+    </view>
+  </scroll-view>
+</view>

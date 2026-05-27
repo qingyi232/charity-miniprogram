@@ -1,0 +1,17 @@
+<view class="records-page">
+  <view class="record-item" wx:for="{{records}}" wx:key="_id">
+    <image class="record-img" src="{{item.goodsImage || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+    <view class="record-info">
+      <text class="record-name">{{item.goodsName}}</text>
+      <text class="record-time">{{item.createTimeStr}}</text>
+      <view class="record-bottom">
+        <text class="record-points">-{{item.totalPoints}} 积分</text>
+        <text class="record-status status-{{item.status}}">{{statusMap[item.status] || item.status}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{records.length === 0}}" class="empty-state">
+    <text>暂无兑换记录</text>
+  </view>
+</view>

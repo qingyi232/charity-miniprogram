@@ -1,0 +1,1 @@
+{"_id":"admin_001","username":"admin","password":"admin123","name":"系统管理员","role":"super_admin","phone":"13800000000","status":"active","createTime":{"$date":"2026-01-01T08:00:00.000Z"},"updateTime":{"$date":"2026-01-01T08:00:00.000Z"}}

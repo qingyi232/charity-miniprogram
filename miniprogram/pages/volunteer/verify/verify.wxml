@@ -1,0 +1,70 @@
+<view class="verify-page">
+  <view wx:if="{{verified}}" class="verified-banner">
+    <image class="v-icon" src="/static/icons/check.svg" mode="aspectFit" />
+    <text class="v-text">您已通过实名认证</text>
+  </view>
+
+  <view wx:elif="{{verifyApplied}}" class="pending-banner">
+    <image class="v-icon" src="/static/icons/info.svg" mode="aspectFit" />
+    <text class="v-text">认证申请已提交，等待管理员审核</text>
+    <text class="v-sub">提交时间：{{verifyApplyTime}}</text>
+  </view>
+
+  <view wx:else class="form-area">
+    <view class="section-title">基本信息</view>
+
+    <view class="form-group">
+      <text class="form-label">真实姓名 <text class="required">*</text></text>
+      <input class="form-input" placeholder="请输入真实姓名" value="{{form.realName}}" bindinput="onInput" data-field="realName" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">手机号码 <text class="required">*</text></text>
+      <input class="form-input" type="number" maxlength="11" placeholder="请输入手机号码" value="{{form.phone}}" bindinput="onInput" data-field="phone" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">身份证号 <text class="required">*</text></text>
+      <input class="form-input" placeholder="请输入身份证号码" value="{{form.idCard}}" bindinput="onInput" data-field="idCard" maxlength="18" />
+    </view>
+
+    <view class="section-title">服务信息</view>
+
+    <view class="form-group">
+      <text class="form-label">服务区域 <text class="required">*</text></text>
+      <input class="form-input" placeholder="例：xx市xx区xx街道" value="{{form.serviceArea}}" bindinput="onInput" data-field="serviceArea" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">擅长服务类型 <text class="required">*</text></text>
+      <view class="type-tags">
+        <view class="type-tag {{form.serviceTypes.indexOf('escort') >= 0 ? 'active' : ''}}" bindtap="toggleType" data-type="escort">陪护照料</view>
+        <view class="type-tag {{form.serviceTypes.indexOf('shopping') >= 0 ? 'active' : ''}}" bindtap="toggleType" data-type="shopping">生活代购</view>
+        <view class="type-tag {{form.serviceTypes.indexOf('medical') >= 0 ? 'active' : ''}}" bindtap="toggleType" data-type="medical">就医陪同</view>
+        <view class="type-tag {{form.serviceTypes.indexOf('housework') >= 0 ? 'active' : ''}}" bindtap="toggleType" data-type="housework">家务帮忙</view>
+        <view class="type-tag {{form.serviceTypes.indexOf('chat') >= 0 ? 'active' : ''}}" bindtap="toggleType" data-type="chat">日常聊天</view>
+        <view class="type-tag {{form.serviceTypes.indexOf('other') >= 0 ? 'active' : ''}}" bindtap="toggleType" data-type="other">其他服务</view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">个人简介</text>
+      <textarea class="form-textarea" placeholder="简单介绍自己（选填）" value="{{form.bio}}" bindinput="onInput" data-field="bio" maxlength="200" />
+      <text class="char-count">{{form.bio.length || 0}}/200</text>
+    </view>
+
+    <view class="notice-box">
+      <text class="notice-title">认证须知</text>
+      <text class="notice-text">1. 请确保填写信息真实有效</text>
+      <text class="notice-text">2. 提交后由管理员进行审核</text>
+      <text class="notice-text">3. 审核通过后可接单服务</text>
+      <text class="notice-text">4. 个人信息将严格保密</text>
+    </view>
+
+    <view class="submit-area">
+      <button class="submit-btn" bindtap="handleSubmit" disabled="{{submitting}}">
+        {{submitting ? '提交中...' : '提交认证申请'}}
+      </button>
+    </view>
+  </view>
+</view>

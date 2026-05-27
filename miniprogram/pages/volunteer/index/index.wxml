@@ -1,0 +1,244 @@
+<view class="volunteer-page">
+  <!-- 顶部青绿渐变区 -->
+  <view class="header-bg">
+    <view class="header-top">
+      <view class="header-left">
+        <text class="header-title">任务广场</text>
+      </view>
+      <view class="header-right">
+        <view class="msg-btn" bindtap="goMessage">
+          <image class="msg-icon" src="/static/icons/chat.svg" mode="aspectFit" />
+          <view wx:if="{{unreadCount > 0}}" class="badge">{{unreadCount}}</view>
+        </view>
+        <image class="avatar" src="{{userInfo.avatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" bindtap="goMine" binderror="onAvatarError" />
+      </view>
+    </view>
+
+    <!-- 大学生志愿者横幅 -->
+    <view class="banner-card">
+      <view class="banner-left">
+        <text class="banner-title">大学生志愿者</text>
+        <text class="banner-subtitle">公益任务</text>
+      </view>
+      <view class="banner-right">
+        <image class="banner-illust" src="/static/icons/grandma.svg" mode="aspectFit" />
+      </view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="content-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="scroll-inner">
+    <!-- 今日待服务提醒 -->
+    <view wx:if="{{myTodayOrders.length > 0}}" class="today-remind">
+      <view class="remind-header">
+        <text class="remind-title">今日待服务</text>
+        <text class="remind-count">{{myTodayOrders.length}}个任务</text>
+      </view>
+      <view class="remind-item" wx:for="{{myTodayOrders}}" wx:key="_id">
+        <text class="remind-time">{{item.serviceTime || '待定'}}</text>
+        <text class="remind-name">{{item.title}}</text>
+        <text class="remind-cat">{{item.category || '帮扶'}}</text>
+      </view>
+    </view>
+
+    <!-- 社区数据看板 -->
+    <view class="dashboard-card">
+      <view class="dash-title">社区服务数据</view>
+      <view class="dash-grid">
+        <view class="dash-item">
+          <text class="dash-val">{{communityStats.pendingOrders || 0}}</text>
+          <text class="dash-label">待帮扶</text>
+        </view>
+        <view class="dash-item">
+          <text class="dash-val">{{communityStats.todayCompleted || 0}}</text>
+          <text class="dash-label">今日完成</text>
+        </view>
+        <view class="dash-item">
+          <text class="dash-val">{{communityStats.activeVolunteers || 0}}</text>
+          <text class="dash-label">活跃志愿者</text>
+        </view>
+        <view class="dash-item">
+          <text class="dash-val">{{communityStats.totalHours || 0}}h</text>
+          <text class="dash-label">累计服务</text>
+        </view>
+      </view>
+      <view class="dash-supply-demand">
+        <text class="dash-sd-title">供需概况</text>
+        <view class="dash-sd-row">
+          <view class="dash-sd-item">
+            <text class="sd-label">需求侧</text>
+            <text class="sd-val demand">{{communityStats.pendingOrders || 0}} 单待帮扶</text>
+          </view>
+          <view class="dash-sd-item">
+            <text class="sd-label">供给侧</text>
+            <text class="sd-val supply">{{communityStats.activeVolunteers || 0}} 名志愿者在线</text>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{topCategories.length > 0}}" class="dash-top3">
+        <text class="dash-top3-title">高频需求 TOP3</text>
+        <view class="top3-list">
+          <view class="top3-item" wx:for="{{topCategories}}" wx:key="name">
+            <text class="top3-rank">{{index + 1}}</text>
+            <text class="top3-name">{{item.name}}</text>
+            <view class="top3-bar-bg"><view class="top3-bar" style="width:{{item.percent}}%"></view></view>
+            <text class="top3-count">{{item.count}}单</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 服务时长 + 星级统计条 -->
+    <view class="stats-bar">
+      <view class="stats-left">
+        <text class="stats-label">累计服务</text>
+        <text class="stats-hours">{{userInfo.totalServiceHours || 0}} <text class="stats-unit">小时</text></text>
+      </view>
+      <view class="stats-right">
+        <image class="star-badge" src="/static/icons/medal.svg" mode="aspectFit" />
+        <text class="star-text">{{starLevelText}}</text>
+      </view>
+    </view>
+
+    <!-- 任务广场 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">任务广场</text>
+        <view class="section-more" bindtap="goAllOrders">查看全部 <image class="more-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" /></view>
+      </view>
+
+      <!-- 筛选栏 -->
+      <view class="filter-bar">
+        <view class="filter-item {{orderFilter === '' ? 'active' : ''}}" bindtap="setOrderFilter" data-filter="">全部</view>
+        <view class="filter-item {{orderFilter === 'escort' ? 'active' : ''}}" bindtap="setOrderFilter" data-filter="escort">陪护</view>
+        <view class="filter-item {{orderFilter === 'shopping' ? 'active' : ''}}" bindtap="setOrderFilter" data-filter="shopping">代购</view>
+        <view class="filter-item {{orderFilter === 'medical' ? 'active' : ''}}" bindtap="setOrderFilter" data-filter="medical">就医</view>
+        <view class="filter-item {{orderFilter === 'housework' ? 'active' : ''}}" bindtap="setOrderFilter" data-filter="housework">家务</view>
+      </view>
+
+      <view class="order-list">
+        <view class="order-card {{(item.urgency || 0) >= 5 ? 'urgent' : ''}}" wx:for="{{orderList}}" wx:key="_id">
+          <view wx:if="{{(item.urgency || 0) >= 5}}" class="urgent-tag">紧急</view>
+          <image class="order-photo" src="{{item.elderAvatar || item.cover || '/static/images/default-avatar.svg'}}" mode="aspectFill" binderror="onOrderImgError" data-idx="{{index}}" />
+          <view class="order-body">
+            <text class="order-title">{{item.title}}</text>
+            <text class="order-addr">{{item.address || '未设置地址'}}</text>
+            <view class="order-stars">
+              <text wx:for="{{5}}" wx:key="*this" wx:for-item="s" wx:for-index="idx"
+                    class="star {{idx < (item.urgency || 3) ? 'active' : ''}}"><image class="star-icon" src="{{idx < (item.urgency || 3) ? '/static/icons/star-filled.svg' : '/static/icons/star.svg'}}" mode="aspectFit" /></text>
+            </view>
+            <view class="order-bottom">
+              <text class="order-category">{{item.category || '帮扶'}}</text>
+              <text class="order-duration" wx:if="{{item.estimatedDuration}}">约{{item.estimatedDuration}}</text>
+              <text class="order-time">{{item.serviceTime || '待定'}}</text>
+            </view>
+          </view>
+          <view class="order-action-col">
+            <view class="view-btn" bindtap="handleAccept" data-id="{{item._id}}">
+              <text>接单</text>
+            </view>
+            <view class="reject-btn" bindtap="handleReject" data-id="{{item._id}}">
+              <text>拒绝</text>
+            </view>
+          </view>
+        </view>
+
+        <view wx:if="{{orderList.length === 0}}" class="empty-state">
+          <image class="empty-emoji" src="/static/icons/clipboard.svg" mode="aspectFit" />
+          <text class="empty-text">暂无待接单任务</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 我的结对老人 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">我的结对老人</text>
+        <view class="section-more" bindtap="goPairList">查看全部 <image class="more-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" /></view>
+      </view>
+      <view class="pair-list">
+        <view class="pair-item" wx:for="{{pairList}}" wx:key="_id" bindtap="goPairDetail" data-id="{{item._id}}">
+          <image class="pair-avatar" src="{{item.elderAvatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" binderror="onPairImgError" data-idx="{{index}}" />
+          <text class="pair-name">{{item.elderName || '老人'}}</text>
+        </view>
+        <view wx:if="{{pairList.length === 0}}" class="empty-pair">
+          <text>暂无结对老人</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 公益活动入口 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">公益活动</text>
+        <view class="section-more" bindtap="goActivity">查看全部 <image class="more-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" /></view>
+      </view>
+      <view wx:if="{{announcements.length > 0}}" class="activity-preview">
+        <view class="activity-item" wx:for="{{announcements}}" wx:key="_id" bindtap="goActivity">
+          <view class="activity-tag">活动</view>
+          <text class="activity-title">{{item.title}}</text>
+          <text class="activity-date" wx:if="{{item.activityDate}}">{{item.activityDate}}</text>
+        </view>
+      </view>
+      <view wx:else class="empty-pair">
+        <text>暂无活动</text>
+      </view>
+    </view>
+
+    <!-- 成功案例推荐 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">优秀实践</text>
+        <view class="section-more" bindtap="goTraining">更多案例 <image class="more-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" /></view>
+      </view>
+      <view class="case-preview">
+        <view class="case-preview-item" wx:for="{{casePreviews}}" wx:key="title">
+          <text class="case-p-title">{{item.title}}</text>
+          <text class="case-p-community">{{item.community}}</text>
+        </view>
+        <view wx:if="{{casePreviews.length === 0}}" class="empty-pair"><text>暂无案例</text></view>
+      </view>
+    </view>
+
+    <!-- 服务时长统计面板 -->
+    <view class="service-stats-card">
+      <view class="service-stats-header">
+        <text class="service-stats-title">服务统计</text>
+      </view>
+      <view class="service-stats-grid">
+        <view class="service-stat-item">
+          <text class="service-stat-value">{{serviceStats.totalOrders || 0}}</text>
+          <text class="service-stat-label">完成订单</text>
+        </view>
+        <view class="service-stat-item">
+          <text class="service-stat-value">{{serviceStats.totalHours || 0}}</text>
+          <text class="service-stat-label">服务时长(h)</text>
+        </view>
+        <view class="service-stat-item">
+          <text class="service-stat-value">{{serviceStats.pairCount || 0}}</text>
+          <text class="service-stat-label">结对老人</text>
+        </view>
+        <view class="service-stat-item">
+          <text class="service-stat-value">{{serviceStats.rating || '--'}}</text>
+          <text class="service-stat-label">好评率</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-space"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 自定义输入弹窗 -->
+  <view wx:if="{{showInputModal}}" class="modal-overlay">
+    <view class="modal-mask" bindtap="cancelInputModal"></view>
+    <view class="modal-dialog">
+      <text class="modal-title">{{inputModalTitle}}</text>
+      <textarea class="modal-textarea" placeholder="{{inputModalPlaceholder}}" value="{{inputModalValue}}" bindinput="onModalInput" auto-height maxlength="300" />
+      <view class="modal-actions">
+        <view class="modal-cancel" bindtap="cancelInputModal"><text>取消</text></view>
+        <view class="modal-confirm modal-confirm-danger" bindtap="confirmInputModal"><text>{{inputModalConfirmText}}</text></view>
+      </view>
+    </view>
+  </view>
+</view>

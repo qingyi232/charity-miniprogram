@@ -1,0 +1,158 @@
+.message-page {
+  min-height: 100vh;
+  background: #F2F8F6;
+}
+
+.page-header {
+  padding: 20rpx 30rpx;
+  padding-top: calc(env(safe-area-inset-top) + 20rpx);
+  background: linear-gradient(135deg, #43B89C, #2DB5A0);
+}
+.page-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+.message-scroll {
+  height: calc(100vh - 200rpx);
+  overflow-x: hidden;
+}
+.scroll-inner {
+  padding: 20rpx 24rpx;
+}
+
+.msg-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
+}
+.msg-avatar-wrap {
+  position: relative;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+.msg-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  border: 2rpx solid #E6F7F4;
+}
+.msg-dot {
+  position: absolute;
+  top: -4rpx;
+  right: -4rpx;
+  background: #FF4444;
+  color: #fff;
+  font-size: 20rpx;
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  text-align: center;
+  border-radius: 16rpx;
+  padding: 0 6rpx;
+}
+.msg-content {
+  flex: 1;
+  overflow: hidden;
+}
+.msg-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+.msg-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+.msg-time {
+  font-size: 22rpx;
+  color: #bbb;
+}
+.msg-preview {
+  font-size: 26rpx;
+  color: #999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sos-msg {
+  display: flex;
+  align-items: flex-start;
+  background: #FFF0F0;
+  border: 2rpx solid #FFCCCC;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 16rpx;
+}
+.sos-icon {
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+.sos-content {
+  flex: 1;
+}
+.sos-text {
+  font-size: 26rpx;
+  color: #C62828;
+  display: block;
+  margin-bottom: 6rpx;
+  line-height: 1.5;
+}
+.sos-time {
+  font-size: 22rpx;
+  color: #bbb;
+}
+
+.system-msg {
+  display: flex;
+  align-items: flex-start;
+  background: #F0F8FF;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 12rpx;
+}
+.system-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+.system-content {
+  flex: 1;
+}
+.system-text {
+  font-size: 26rpx;
+  color: #37474F;
+  display: block;
+  margin-bottom: 6rpx;
+}
+.system-time {
+  font-size: 22rpx;
+  color: #bbb;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 0;
+}
+.empty-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 20rpx;
+}
+.empty-text {
+  font-size: 28rpx;
+  color: #ccc;
+}

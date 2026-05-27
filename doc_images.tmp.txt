@@ -1,0 +1,10 @@
+﻿python :   File "<string>", line 23
+所在位置 C:\Users\Administrator\AppData\Local\Temp\ps-script-4b8e4c1f-d976-48f8-aeb1-64de4235733b.ps1:124 字符: 1
++ python -c "
++ ~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (  File "<string>", line 23:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    print(f'Image at element {i}: name={desc.get(" name\,
+                                                 ^
+SyntaxError: unterminated string literal (detected at line 23)

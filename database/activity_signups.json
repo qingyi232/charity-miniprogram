@@ -1,0 +1,2 @@
+{"_id":"signup_001","activityId":"ann_001","userId":"user_vol_001","userName":"李志愿","userRole":"volunteer","createTime":{"$date":"2026-05-05T08:00:00.000Z"}}
+{"_id":"signup_002","activityId":"ann_001","userId":"user_vol_002","userName":"赵小明","userRole":"volunteer","createTime":{"$date":"2026-05-06T10:00:00.000Z"}}

@@ -1,0 +1,84 @@
+<view class="shop-page">
+  <!-- 积分卡片 -->
+  <view class="points-card">
+    <view class="points-bg"></view>
+    <view class="points-content">
+      <view class="points-top">
+        <text class="points-label">我的心火积分</text>
+        <view class="points-history" bindtap="goPointsHistory">
+          <text>积分明细</text>
+          <image class="arrow-icon" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+        </view>
+      </view>
+      <view class="points-number">{{pointsInfo.availablePoints || 0}}</view>
+      <view class="points-row">
+        <view class="points-item">
+          <text class="p-val">{{pointsInfo.totalPoints || 0}}</text>
+          <text class="p-lbl">累计获得</text>
+        </view>
+        <view class="points-divider"></view>
+        <view class="points-item">
+          <text class="p-val">{{pointsInfo.usedPoints || 0}}</text>
+          <text class="p-lbl">已使用</text>
+        </view>
+        <view class="points-divider"></view>
+        <view class="points-item">
+          <text class="p-val">{{pointsInfo.totalServiceHours || 0}}h</text>
+          <text class="p-lbl">服务时长</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能入口 -->
+  <view class="func-bar">
+    <view class="func-item" bindtap="goRanking">
+      <image src="/static/icons/medal.svg" mode="aspectFit" class="func-icon" />
+      <text>排行榜</text>
+    </view>
+    <view class="func-item" bindtap="goExchangeRecords">
+      <image src="/static/icons/clipboard.svg" mode="aspectFit" class="func-icon" />
+      <text>兑换记录</text>
+    </view>
+    <view class="func-item" bindtap="goPointsRules">
+      <image src="/static/icons/info.svg" mode="aspectFit" class="func-icon" />
+      <text>积分规则</text>
+    </view>
+  </view>
+
+  <!-- 分类筛选 -->
+  <view class="category-bar">
+    <view class="cat-item {{currentCategory === '' ? 'active' : ''}}" bindtap="switchCategory" data-cat="">全部</view>
+    <view class="cat-item {{currentCategory === 'certificate' ? 'active' : ''}}" bindtap="switchCategory" data-cat="certificate">公益证书</view>
+    <view class="cat-item {{currentCategory === 'gift' ? 'active' : ''}}" bindtap="switchCategory" data-cat="gift">志愿者纪念品</view>
+    <view class="cat-item {{currentCategory === 'course' ? 'active' : ''}}" bindtap="switchCategory" data-cat="course">培训课程</view>
+    <view class="cat-item {{currentCategory === 'other' ? 'active' : ''}}" bindtap="switchCategory" data-cat="other">其他</view>
+  </view>
+
+  <!-- 商品列表 -->
+  <view class="goods-grid">
+    <view class="goods-card" wx:for="{{goodsList}}" wx:key="_id" bindtap="goGoodsDetail" data-id="{{item._id}}">
+      <image class="goods-img" src="{{item.image || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+      <view class="goods-info">
+        <text class="goods-name">{{item.name}}</text>
+        <text class="goods-desc">{{item.description}}</text>
+        <view class="goods-bottom">
+          <view class="goods-price">
+            <text class="price-num">{{item.pointsPrice}}</text>
+            <text class="price-unit">积分</text>
+          </view>
+          <text class="goods-exchanged">已兑{{item.exchangeCount || 0}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{goodsList.length === 0 && !loading}}" class="empty-state">
+    <image class="empty-icon" src="/static/icons/clipboard.svg" mode="aspectFit" />
+    <text class="empty-text">暂无可兑换商品</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-state">
+    <text>加载中...</text>
+  </view>
+</view>

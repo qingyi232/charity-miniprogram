@@ -1,0 +1,116 @@
+<view class="pair-page">
+  <view class="page-header">
+    <text class="page-title">我的结对老人</text>
+  </view>
+
+  <scroll-view scroll-y class="pair-scroll">
+    <view class="scroll-inner">
+    <view class="pair-card" wx:for="{{pairList}}" wx:key="_id">
+      <view class="card-main" bindtap="toggleDetail" data-index="{{index}}">
+        <image class="pair-avatar" src="{{item.elderAvatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+        <view class="pair-info">
+          <text class="pair-name">{{item.elderName || '老人'}}</text>
+          <text class="pair-address"><image class="inline-icon" src="/static/icons/location.svg" mode="aspectFit" /> {{item.elderAddress || '未设置地址'}}</text>
+          <text class="pair-date">结对时间: {{item.pairDate || '--'}}</text>
+        </view>
+        <view class="pair-actions">
+          <view class="pair-call" catchtap="callElder" data-phone="{{item.elderPhone}}"><image class="action-icon" src="/static/icons/phone.svg" mode="aspectFit" /></view>
+          <view class="pair-chat" catchtap="goChat" data-item="{{item}}"><image class="action-icon" src="/static/icons/chat.svg" mode="aspectFit" /></view>
+        </view>
+      </view>
+
+      <!-- 展开详情区域 -->
+      <view wx:if="{{expandedIndex === index}}" class="card-detail">
+        <!-- 老人基础信息 -->
+        <view class="detail-section">
+          <text class="detail-title">基础信息</text>
+          <view class="info-grid">
+            <view class="info-item">
+              <text class="info-label">年龄</text>
+              <text class="info-value">{{item.elderAge || '未知'}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">电话</text>
+              <text class="info-value">{{item.elderPhone || '未公开'}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">地址</text>
+              <text class="info-value">{{item.elderAddress || '未设置'}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 健康数据摘要 -->
+        <view class="detail-section">
+          <text class="detail-title">最新健康数据</text>
+          <view wx:if="{{item.healthData}}" class="health-mini-grid">
+            <view class="health-mini-item">
+              <text class="hm-value {{item.healthData.bpAlert ? 'alert' : ''}}">{{item.healthData.bp || '--/--'}}</text>
+              <text class="hm-label">血压</text>
+            </view>
+            <view class="health-mini-item">
+              <text class="hm-value">{{item.healthData.heartRate || '--'}}</text>
+              <text class="hm-label">心率</text>
+            </view>
+            <view class="health-mini-item">
+              <text class="hm-value {{item.healthData.boAlert ? 'alert' : ''}}">{{item.healthData.bloodOxygen || '--'}}</text>
+              <text class="hm-label">血氧%</text>
+            </view>
+            <view class="health-mini-item">
+              <text class="hm-value">{{item.healthData.temperature || '--'}}</text>
+              <text class="hm-label">体温°C</text>
+            </view>
+          </view>
+          <view wx:else class="no-health">
+            <text>暂无健康数据</text>
+          </view>
+          <text wx:if="{{item.healthData}}" class="health-time">更新于: {{item.healthData.timeStr}}</text>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="detail-actions">
+          <view class="detail-btn checkin-btn" catchtap="handleCheckin" data-pair-id="{{item._id}}" data-type="arrive">
+            <image class="btn-icon" src="/static/icons/location.svg" mode="aspectFit" />
+            <text>到达签到</text>
+          </view>
+          <view class="detail-btn service-btn" catchtap="handleCheckin" data-pair-id="{{item._id}}" data-type="service">
+            <image class="btn-icon" src="/static/icons/heartbeat.svg" mode="aspectFit" />
+            <text>服务中打卡</text>
+          </view>
+          <view class="detail-btn checkout-btn" catchtap="handleCheckout" data-pair-id="{{item._id}}" data-type="leave">
+            <image class="btn-icon" src="/static/icons/check.svg" mode="aspectFit" />
+            <text>结束签退</text>
+          </view>
+          <view class="detail-btn health-btn" catchtap="viewElderHealth" data-elder-id="{{item.elderId}}" data-elder-name="{{item.elderName}}">
+            <image class="btn-icon" src="/static/icons/heartbeat.svg" mode="aspectFit" />
+            <text>健康档案</text>
+          </view>
+          <view class="detail-btn sos-btn" catchtap="volunteerSOS" data-pair-id="{{item._id}}">
+            <image class="btn-icon" src="/static/icons/sos.svg" mode="aspectFit" />
+            <text>一键求助</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{pairList.length === 0}}" class="empty-state">
+      <image class="empty-icon" src="/static/icons/grandma.svg" mode="aspectFit" />
+      <text class="empty-text">暂无结对老人</text>
+      <text class="empty-desc">接单并完成任务后将自动匹配结对</text>
+    </view>
+    </view>
+  </scroll-view>
+
+  <!-- 自定义输入弹窗 -->
+  <view wx:if="{{showInputModal}}" class="modal-overlay">
+    <view class="modal-mask" bindtap="cancelInputModal"></view>
+    <view class="modal-dialog">
+      <text class="modal-title">{{inputModalTitle}}</text>
+      <textarea class="modal-textarea" placeholder="{{inputModalPlaceholder}}" value="{{inputModalValue}}" bindinput="onModalInput" auto-height maxlength="300" />
+      <view class="modal-actions">
+        <view class="modal-cancel" bindtap="cancelInputModal"><text>取消</text></view>
+        <view class="modal-confirm" bindtap="confirmInputModal"><text>签退</text></view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,54 @@
+<view class="course-page elder-theme">
+  <!-- 顶部横幅 -->
+  <view class="course-banner">
+    <image class="banner-bg" src="/static/images/course-cover.svg" mode="aspectFill" />
+    <view class="banner-overlay">
+      <text class="banner-title">银发课堂</text>
+      <text class="banner-sub">轻松学习，快乐生活</text>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="course-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="scroll-inner">
+    <!-- 课程分类 -->
+    <view class="category-tabs">
+      <text class="cat-tab {{activeCategory === 'all' ? 'active' : ''}}"
+            bindtap="switchCategory" data-cat="all">全部</text>
+      <text class="cat-tab {{activeCategory === 'phone' ? 'active' : ''}}"
+            bindtap="switchCategory" data-cat="phone">手机使用</text>
+      <text class="cat-tab {{activeCategory === 'health' ? 'active' : ''}}"
+            bindtap="switchCategory" data-cat="health">健康养生</text>
+      <text class="cat-tab {{activeCategory === 'safety' ? 'active' : ''}}"
+            bindtap="switchCategory" data-cat="safety">防诈安全</text>
+      <text class="cat-tab {{activeCategory === 'life' ? 'active' : ''}}"
+            bindtap="switchCategory" data-cat="life">生活技能</text>
+    </view>
+
+    <!-- 课程列表 -->
+    <view class="course-list">
+      <view class="course-card" wx:for="{{courseList}}" wx:key="id"
+            bindtap="goDetail" data-item="{{item}}">
+        <view class="course-cover-wrap">
+          <image class="course-cover" src="{{item.cover}}" mode="aspectFill" />
+          <view class="course-duration">{{item.duration}}</view>
+        </view>
+        <view class="course-info">
+          <text class="course-title">{{item.title}}</text>
+          <text class="course-desc">{{item.description}}</text>
+          <view class="course-meta">
+            <view class="course-cat-tag">{{item.categoryName}}</view>
+            <text class="course-views">{{item.views || 0}} 人学过</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{courseList.length === 0}}" class="empty-state">
+      <image class="empty-icon" src="/static/icons/book.svg" mode="aspectFit" />
+      <text class="empty-text">暂无课程</text>
+    </view>
+
+    <view class="bottom-space"></view>
+    </view>
+  </scroll-view>
+</view>

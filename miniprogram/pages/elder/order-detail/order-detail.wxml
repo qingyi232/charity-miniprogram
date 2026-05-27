@@ -1,0 +1,234 @@
+<view class="detail-page elder-theme">
+  <scroll-view scroll-y class="detail-scroll">
+    <view class="scroll-inner">
+
+    <!-- ========== 帮扶需求详情 ========== -->
+    <block wx:if="{{orderType === 'help'}}">
+      <view class="status-card status-{{order.status}}">
+        <image class="status-icon" src="/static/icons/{{statusIcon}}" mode="aspectFit" />
+        <text class="status-text">{{statusText}}</text>
+        <text class="status-desc">{{statusDesc}}</text>
+      </view>
+
+      <view class="info-card">
+        <view class="card-header">
+          <text class="card-title">需求信息</text>
+          <view class="category-tag">{{order.category || '帮扶'}}</view>
+        </view>
+        <text class="order-title-text">{{order.title}}</text>
+        <text class="order-desc-text">{{order.description || '暂无描述'}}</text>
+        <view class="info-row">
+          <image class="info-icon" src="/static/icons/clock.svg" mode="aspectFit" />
+          <text class="info-text">服务时间：{{order.serviceTime || '待定'}}</text>
+        </view>
+        <view class="info-row">
+          <image class="info-icon" src="/static/icons/location.svg" mode="aspectFit" />
+          <text class="info-text">服务地址：{{order.address || '未设置'}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-text">紧急程度：</text>
+          <view class="urgency-stars">
+            <image wx:for="{{5}}" wx:key="*this" wx:for-index="idx"
+                   class="star-icon {{idx < (order.urgency || 3) ? 'active' : ''}}"
+                   src="{{idx < (order.urgency || 3) ? '/static/icons/star-filled.svg' : '/static/icons/star.svg'}}" mode="aspectFit" />
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{order.volunteerId}}" class="info-card volunteer-card">
+        <view class="card-header">
+          <text class="card-title">服务志愿者</text>
+        </view>
+        <view class="volunteer-row">
+          <image class="vol-avatar" src="{{volunteerInfo.avatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+          <view class="vol-info">
+            <text class="vol-name">{{order.volunteerName || '志愿者'}}</text>
+            <text class="vol-phone" wx:if="{{volunteerInfo.phone}}">{{volunteerInfo.phone}}</text>
+          </view>
+          <view class="vol-actions">
+            <view class="vol-call" catchtap="callVolunteer">
+              <image src="/static/icons/phone.svg" mode="aspectFit" />
+            </view>
+            <view class="vol-chat" catchtap="goChat">
+              <image src="/static/icons/chat.svg" mode="aspectFit" />
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{order.status === 'completed'}}" class="info-card">
+        <view class="card-header">
+          <text class="card-title">服务记录</text>
+        </view>
+        <view class="service-info">
+          <view class="si-row">
+            <text class="si-label">接单时间</text>
+            <text class="si-value">{{acceptTimeStr}}</text>
+          </view>
+          <view class="si-row" wx:if="{{order.checkInTime}}">
+            <text class="si-label">签到时间</text>
+            <text class="si-value">{{checkInTimeStr}}</text>
+          </view>
+          <view class="si-row" wx:if="{{order.checkOutTime}}">
+            <text class="si-label">签退时间</text>
+            <text class="si-value">{{checkOutTimeStr}}</text>
+          </view>
+          <view class="si-row">
+            <text class="si-label">服务时长</text>
+            <text class="si-value highlight">{{order.serviceHours || '--'}} 小时</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{order.status === 'completed' && !order.rating}}" class="info-card rate-card">
+        <view class="card-header">
+          <text class="card-title">服务评价</text>
+        </view>
+        <text class="rate-hint">请对本次服务进行评价</text>
+        <view class="rate-stars">
+          <view wx:for="{{5}}" wx:key="*this" wx:for-index="idx"
+                class="rate-star {{idx < rateValue ? 'active' : ''}}"
+                bindtap="setRate" data-value="{{idx + 1}}">
+            <image src="{{idx < rateValue ? '/static/icons/star-filled.svg' : '/static/icons/star.svg'}}" mode="aspectFit" />
+          </view>
+        </view>
+        <text class="rate-text">{{rateTexts[rateValue - 1] || '点击星星评分'}}</text>
+        <textarea class="rate-comment" placeholder="写下您的评价（选填）"
+                  value="{{rateComment}}" bindinput="onCommentInput"
+                  maxlength="200" />
+        <view class="rate-submit" bindtap="submitRate">
+          <text>提交评价</text>
+        </view>
+      </view>
+
+      <view wx:if="{{order.rating > 0}}" class="info-card rated-card">
+        <view class="card-header">
+          <text class="card-title">我的评价</text>
+        </view>
+        <view class="rated-stars">
+          <image wx:for="{{5}}" wx:key="*this" wx:for-index="idx"
+                 class="star-icon {{idx < order.rating ? 'active' : ''}}"
+                 src="{{idx < order.rating ? '/static/icons/star-filled.svg' : '/static/icons/star.svg'}}" mode="aspectFit" />
+          <text class="rated-text">{{rateTexts[order.rating - 1]}}</text>
+        </view>
+        <text wx:if="{{order.comment}}" class="rated-comment">{{order.comment}}</text>
+      </view>
+    </block>
+
+    <!-- ========== 商城订单详情 ========== -->
+    <block wx:if="{{orderType === 'shop'}}">
+      <!-- 配送状态 -->
+      <view class="status-card status-shop-{{order.orderStatus}}">
+        <text class="status-text">{{statusText}}</text>
+        <text class="status-desc">{{statusDesc}}</text>
+      </view>
+
+      <!-- 配送进度条 -->
+      <view class="info-card">
+        <view class="shop-progress">
+          <view class="progress-item {{order.orderStatus !== 'cancelled' ? 'done' : ''}}">
+            <view class="progress-dot"></view>
+            <text class="progress-label">已下单</text>
+          </view>
+          <view class="progress-line {{order.orderStatus !== 'pending_accept' && order.orderStatus !== 'cancelled' ? 'done' : ''}}"></view>
+          <view class="progress-item {{order.orderStatus !== 'pending_accept' && order.orderStatus !== 'cancelled' ? 'done' : ''}}">
+            <view class="progress-dot"></view>
+            <text class="progress-label">已接单</text>
+          </view>
+          <view class="progress-line {{order.orderStatus === 'delivering' || order.orderStatus === 'delivered' || order.orderStatus === 'completed' ? 'done' : ''}}"></view>
+          <view class="progress-item {{order.orderStatus === 'delivering' || order.orderStatus === 'delivered' || order.orderStatus === 'completed' ? 'done' : ''}}">
+            <view class="progress-dot"></view>
+            <text class="progress-label">配送中</text>
+          </view>
+          <view class="progress-line {{order.orderStatus === 'delivered' || order.orderStatus === 'completed' ? 'done' : ''}}"></view>
+          <view class="progress-item {{order.orderStatus === 'delivered' || order.orderStatus === 'completed' ? 'done' : ''}}">
+            <view class="progress-dot"></view>
+            <text class="progress-label">已送达</text>
+          </view>
+          <view class="progress-line {{order.orderStatus === 'completed' ? 'done' : ''}}"></view>
+          <view class="progress-item {{order.orderStatus === 'completed' ? 'done' : ''}}">
+            <view class="progress-dot"></view>
+            <text class="progress-label">已付款</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 商品信息 -->
+      <view class="info-card">
+        <view class="card-header">
+          <text class="card-title">商品信息</text>
+        </view>
+        <view class="shop-goods-row">
+          <image class="shop-goods-img" src="{{order.goodsImage || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+          <view class="shop-goods-info">
+            <text class="shop-goods-name">{{order.goodsName}}</text>
+            <text wx:if="{{order.spec}}" class="shop-goods-spec">规格：{{order.spec}}</text>
+            <view class="shop-goods-price-row">
+              <text class="shop-goods-price">¥{{order.price}}</text>
+              <text class="shop-goods-qty">x{{order.quantity}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="shop-total-row">
+          <text>合计金额</text>
+          <text class="shop-total-val">¥{{order.totalAmount}}</text>
+        </view>
+        <view class="shop-total-row">
+          <text>付款方式</text>
+          <text class="shop-pay-method">志愿者送上门收款</text>
+        </view>
+        <view class="shop-total-row">
+          <text>付款状态</text>
+          <text class="shop-pay-status {{order.payStatus === 'paid' ? 'paid' : 'unpaid'}}">{{order.payStatus === 'paid' ? '已付款' : '待付款'}}</text>
+        </view>
+      </view>
+
+      <!-- 配送志愿者信息 -->
+      <view wx:if="{{order.volunteerId}}" class="info-card volunteer-card">
+        <view class="card-header">
+          <text class="card-title">配送志愿者</text>
+        </view>
+        <view class="volunteer-row">
+          <image class="vol-avatar" src="{{volunteerInfo.avatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+          <view class="vol-info">
+            <text class="vol-name">{{order.volunteerName || '志愿者'}}</text>
+            <text class="vol-phone" wx:if="{{volunteerInfo.phone}}">{{volunteerInfo.phone}}</text>
+          </view>
+          <view class="vol-actions">
+            <view class="vol-call" catchtap="callVolunteer">
+              <image src="/static/icons/phone.svg" mode="aspectFit" />
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 订单编号 -->
+      <view class="info-card">
+        <view class="card-header">
+          <text class="card-title">订单信息</text>
+        </view>
+        <view class="si-row">
+          <text class="si-label">订单编号</text>
+          <text class="si-value">{{order.orderNo}}</text>
+        </view>
+      </view>
+    </block>
+
+    <view class="bottom-space"></view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作栏（帮扶需求取消） -->
+  <view wx:if="{{orderType === 'help' && order.status === 'pending'}}" class="bottom-bar">
+    <view class="cancel-btn" bindtap="handleCancel">
+      <text>取消订单</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏（商城订单取消） -->
+  <view wx:if="{{orderType === 'shop' && order.orderStatus === 'pending_accept'}}" class="bottom-bar">
+    <view class="cancel-btn" bindtap="handleShopCancel">
+      <text>取消订单</text>
+    </view>
+  </view>
+</view>

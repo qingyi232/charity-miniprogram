@@ -1,0 +1,9 @@
+{"_id":"msg_001","type":"chat","fromUserId":"user_vol_001","fromUserName":"李志愿","fromUserAvatar":"","toUserId":"user_elder_001","toUserName":"张奶奶","content":"张奶奶您好，我是志愿者小李，明天上午我去帮您买菜","read":true,"createTime":{"$date":"2026-05-09T18:00:00.000Z"}}
+{"_id":"msg_002","type":"chat","fromUserId":"user_elder_001","fromUserName":"张奶奶","fromUserAvatar":"","toUserId":"user_vol_001","toUserName":"李志愿","content":"好的小李，辛苦你了，需要买的东西我列个清单","read":true,"createTime":{"$date":"2026-05-09T18:05:00.000Z"}}
+{"_id":"msg_003","type":"system","fromUserId":"system","toUserId":"user_elder_001","content":"您的订单「需要代购蔬菜水果」已被志愿者李志愿接单","read":true,"createTime":{"$date":"2026-05-09T08:00:00.000Z"}}
+{"_id":"msg_004","type":"system","fromUserId":"system","toUserId":"user_vol_001","content":"您已成功接单「需要代购蔬菜水果」","read":true,"createTime":{"$date":"2026-05-09T08:00:00.000Z"}}
+{"_id":"msg_005","type":"health_alert","fromUserId":"system","toUserId":"user_elder_001","content":"血压异常: 142/92 mmHg","level":"warning","read":false,"createTime":{"$date":"2026-05-13T08:05:00.000Z"}}
+{"_id":"msg_006","type":"health_alert","fromUserId":"system","toUserId":"user_vol_001","content":"您结对的老人张奶奶血压异常: 142/92 mmHg","level":"warning","read":false,"createTime":{"$date":"2026-05-13T08:05:00.000Z"}}
+{"_id":"msg_007","type":"health_alert","fromUserId":"system","toUserId":"user_elder_002","content":"血压异常: 155/95 mmHg","level":"warning","read":false,"createTime":{"$date":"2026-05-16T09:05:00.000Z"}}
+{"_id":"msg_008","type":"health_alert","fromUserId":"system","toUserId":"user_elder_002","content":"血氧偏低: 93%","level":"danger","read":false,"createTime":{"$date":"2026-05-16T09:05:00.000Z"}}
+{"_id":"msg_009","type":"system","fromUserId":"system","toUserId":"user_elder_002","content":"您的订单「陪同就医看心内科」已发布，等待志愿者接单","read":true,"createTime":{"$date":"2026-05-15T08:00:00.000Z"}}

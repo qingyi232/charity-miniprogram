@@ -1,0 +1,53 @@
+<view class="mine-page">
+  <!-- 顶部用户信息 -->
+  <view class="user-header">
+    <image class="user-avatar" src="{{userInfo.avatar || '/static/images/default-avatar.png'}}" mode="aspectFill" />
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickname || userInfo.name || '老人用户'}}</text>
+      <text class="user-phone">{{userInfo.phone || '未绑定手机号'}}</text>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-group">
+    <view class="menu-item" bindtap="goMyOrders">
+      <image class="menu-icon" src="/static/icons/clipboard.svg" mode="aspectFit" />
+      <text class="menu-text">我的需求</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goMyPair">
+      <image class="menu-icon" src="/static/icons/doctor.svg" mode="aspectFit" />
+      <text class="menu-text">我的志愿者</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goHealth">
+      <image class="menu-icon" src="/static/icons/medicine.svg" mode="aspectFit" />
+      <text class="menu-text">健康记录</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+  </view>
+
+  <view class="menu-group">
+    <view class="menu-item" bindtap="goEditProfile">
+      <image class="menu-icon" src="/static/icons/edit.svg" mode="aspectFit" />
+      <text class="menu-text">编辑资料</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goEmergency">
+      <image class="menu-icon" src="/static/icons/sos.svg" mode="aspectFit" />
+      <text class="menu-text">紧急联系人</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goAbout">
+      <image class="menu-icon" src="/static/icons/info.svg" mode="aspectFit" />
+      <text class="menu-text">关于我们</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+  </view>
+
+  <view class="logout-wrapper">
+    <view class="logout-btn" bindtap="handleLogout">
+      <text>退出登录</text>
+    </view>
+  </view>
+</view>

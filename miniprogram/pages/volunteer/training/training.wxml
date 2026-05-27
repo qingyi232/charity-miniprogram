@@ -1,0 +1,101 @@
+<view class="training-page">
+  <!-- 顶部 Tab -->
+  <view class="tab-bar-inner">
+    <view class="tab {{currentTab === 'course' ? 'active' : ''}}" bindtap="switchTab" data-tab="course">培训课程</view>
+    <view class="tab {{currentTab === 'template' ? 'active' : ''}}" bindtap="switchTab" data-tab="template">SOP模板库</view>
+    <view class="tab {{currentTab === 'expert' ? 'active' : ''}}" bindtap="switchTab" data-tab="expert">专家支持</view>
+    <view class="tab {{currentTab === 'case' ? 'active' : ''}}" bindtap="switchTab" data-tab="case">案例库</view>
+  </view>
+
+  <!-- 培训课程 -->
+  <view wx:if="{{currentTab === 'course'}}">
+    <view class="section-label">必修课程</view>
+    <view class="course-list">
+      <view class="course-card" wx:for="{{requiredCourses}}" wx:key="id" bindtap="viewCourse" data-id="{{item.id}}">
+        <view class="course-tag required">必修</view>
+        <text class="course-name">{{item.name}}</text>
+        <text class="course-desc">{{item.desc}}</text>
+        <view class="course-meta">
+          <text class="course-duration">{{item.duration}}</text>
+          <view class="course-progress-bg">
+            <view class="course-progress" style="width:{{item.progress || 0}}%"></view>
+          </view>
+          <text class="course-percent">{{item.progress || 0}}%</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-label">选修课程</view>
+    <view class="course-list">
+      <view class="course-card" wx:for="{{optionalCourses}}" wx:key="id" bindtap="viewCourse" data-id="{{item.id}}">
+        <view class="course-tag optional">选修</view>
+        <text class="course-name">{{item.name}}</text>
+        <text class="course-desc">{{item.desc}}</text>
+        <view class="course-meta">
+          <text class="course-duration">{{item.duration}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- SOP模板库 -->
+  <view wx:if="{{currentTab === 'template'}}">
+    <view class="template-section" wx:for="{{templateGroups}}" wx:key="title">
+      <view class="section-label">{{item.title}}</view>
+      <view class="template-list">
+        <view class="template-card" wx:for="{{item.items}}" wx:for-item="tpl" wx:key="id" bindtap="viewTemplate" data-id="{{tpl.id}}">
+          <image class="tpl-icon" src="/static/icons/clipboard.svg" mode="aspectFit" />
+          <view class="tpl-info">
+            <text class="tpl-name">{{tpl.name}}</text>
+            <text class="tpl-desc">{{tpl.desc}}</text>
+          </view>
+          <image class="tpl-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 专家支持 -->
+  <view wx:if="{{currentTab === 'expert'}}">
+    <view class="expert-list">
+      <view class="expert-card" wx:for="{{expertList}}" wx:key="id">
+        <image class="expert-avatar" src="{{item.avatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+        <view class="expert-info">
+          <text class="expert-name">{{item.name}}</text>
+          <text class="expert-field">{{item.field}}</text>
+          <text class="expert-desc">{{item.desc}}</text>
+        </view>
+        <view class="expert-action" bindtap="consultExpert" data-id="{{item.id}}">
+          <text>咨询</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 案例库 -->
+  <view wx:if="{{currentTab === 'case'}}">
+    <view class="search-bar">
+      <input class="search-input" placeholder="搜索案例" value="{{caseKeyword}}" bindinput="onCaseSearch" />
+    </view>
+    <view class="case-list">
+      <view class="case-card" wx:for="{{caseList}}" wx:key="id" bindtap="viewCase" data-id="{{item.id}}">
+        <text class="case-title">{{item.title}}</text>
+        <text class="case-summary">{{item.summary}}</text>
+        <view class="case-tags">
+          <text class="case-tag" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+        </view>
+        <view class="case-bottom">
+          <text class="case-community">{{item.community}}</text>
+          <view class="case-actions">
+            <view class="case-action" catchtap="collectCase" data-index="{{index}}">
+              <image src="{{item.collected ? '/static/icons/star-filled.svg' : '/static/icons/star.svg'}}" mode="aspectFit" class="action-icon" />
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{caseList.length === 0}}" class="empty-state">
+      <text>暂无案例</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,47 @@
+<view class="detail-page" wx:if="{{goods}}">
+  <image class="detail-img" src="{{goods.image || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+
+  <view class="detail-info">
+    <view class="detail-price-row">
+      <text class="detail-price">{{goods.pointsPrice}}</text>
+      <text class="detail-price-unit">积分</text>
+      <text class="detail-exchanged">已兑换 {{goods.exchangeCount || 0}} 件</text>
+    </view>
+    <text class="detail-name">{{goods.name}}</text>
+    <text class="detail-desc">{{goods.description}}</text>
+  </view>
+
+  <view class="detail-section">
+    <text class="section-title">商品说明</text>
+    <text class="section-content">{{goods.detail || '暂无详细说明'}}</text>
+  </view>
+
+  <view class="detail-section">
+    <text class="section-title">兑换须知</text>
+    <view class="notice-list">
+      <text class="notice-item">1. 兑换后积分即刻扣除，不可退还</text>
+      <text class="notice-item">2. 实物商品将在7个工作日内发放</text>
+      <text class="notice-item">3. 电子证书可在兑换记录中下载</text>
+      <text class="notice-item">4. 如有疑问请联系管理员</text>
+    </view>
+  </view>
+
+  <view class="stock-info">
+    <text class="stock-label">库存：</text>
+    <text class="stock-value {{goods.stock <= 0 ? 'out' : ''}}">{{goods.stock > 0 ? goods.stock + ' 件' : '已兑完'}}</text>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="my-points">
+      <text class="my-points-label">我的积分</text>
+      <text class="my-points-value">{{myPoints}}</text>
+    </view>
+    <button class="exchange-btn {{canExchange ? '' : 'disabled'}}" bindtap="handleExchange" disabled="{{!canExchange || exchanging}}">
+      {{exchanging ? '兑换中...' : (goods.stock <= 0 ? '已兑完' : (myPoints < goods.pointsPrice ? '积分不足' : '立即兑换'))}}
+    </button>
+  </view>
+</view>
+
+<view wx:if="{{!goods && !loading}}" class="error-state">
+  <text>商品不存在或已下架</text>
+</view>

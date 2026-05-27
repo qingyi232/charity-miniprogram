@@ -1,0 +1,123 @@
+<view class="order-page">
+  <view class="page-header">
+    <text class="page-title">任务订单</text>
+  </view>
+
+  <!-- 主分类切换：帮扶任务 / 代购配送 -->
+  <view class="main-tab-bar">
+    <view class="main-tab {{currentTab === 'pending' || currentTab === 'mine' || currentTab === 'completed' ? 'active' : ''}}" bindtap="switchTab" data-tab="pending">
+      <text>帮扶任务</text>
+    </view>
+    <view class="main-tab {{currentTab === 'shop_pending' || currentTab === 'shop_mine' || currentTab === 'shop_done' ? 'active' : ''}}" bindtap="switchTab" data-tab="shop_pending">
+      <text>代购配送</text>
+    </view>
+  </view>
+
+  <!-- 帮扶任务子Tab -->
+  <view wx:if="{{currentTab === 'pending' || currentTab === 'mine' || currentTab === 'completed'}}" class="tab-bar-filter">
+    <view class="tab-item {{currentTab === 'pending' ? 'active' : ''}}" bindtap="switchTab" data-tab="pending">
+      <text>待接单</text>
+    </view>
+    <view class="tab-item {{currentTab === 'mine' ? 'active' : ''}}" bindtap="switchTab" data-tab="mine">
+      <text>我的任务</text>
+    </view>
+    <view class="tab-item {{currentTab === 'completed' ? 'active' : ''}}" bindtap="switchTab" data-tab="completed">
+      <text>已完成</text>
+    </view>
+  </view>
+
+  <!-- 代购配送子Tab -->
+  <view wx:if="{{currentTab === 'shop_pending' || currentTab === 'shop_mine' || currentTab === 'shop_done'}}" class="tab-bar-filter">
+    <view class="tab-item {{currentTab === 'shop_pending' ? 'active' : ''}}" bindtap="switchTab" data-tab="shop_pending">
+      <text>待接单</text>
+    </view>
+    <view class="tab-item {{currentTab === 'shop_mine' ? 'active' : ''}}" bindtap="switchTab" data-tab="shop_mine">
+      <text>配送中</text>
+    </view>
+    <view class="tab-item {{currentTab === 'shop_done' ? 'active' : ''}}" bindtap="switchTab" data-tab="shop_done">
+      <text>已完成</text>
+    </view>
+  </view>
+
+  <!-- 排序切换（仅帮扶待接单时显示） -->
+  <view wx:if="{{currentTab === 'pending'}}" class="sort-bar">
+    <view class="sort-item {{sortBy === 'time' ? 'active' : ''}}" bindtap="switchSort" data-sort="time">
+      <text>最新发布</text>
+    </view>
+    <view class="sort-item {{sortBy === 'distance' ? 'active' : ''}}" bindtap="switchSort" data-sort="distance">
+      <image class="sort-icon" src="/static/icons/location.svg" mode="aspectFit" />
+      <text>距离最近</text>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="order-scroll">
+    <view class="scroll-inner">
+
+    <!-- 帮扶任务列表 -->
+    <block wx:if="{{currentTab === 'pending' || currentTab === 'mine' || currentTab === 'completed'}}">
+      <view class="order-card" wx:for="{{orderList}}" wx:key="_id">
+        <view class="order-left">
+          <image class="order-avatar" src="{{item.elderAvatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+        </view>
+        <view class="order-info">
+          <text class="order-name">{{item.title}}</text>
+          <text class="order-address"><image class="inline-icon" src="/static/icons/location.svg" mode="aspectFit" /> {{item.address || '未设置地址'}}</text>
+          <view wx:if="{{item.distanceText}}" class="distance-tag">
+            <text>{{item.distanceText}}</text>
+          </view>
+          <text class="order-time"><image class="inline-icon" src="/static/icons/clock.svg" mode="aspectFit" /> {{item.serviceTime || '待定'}}</text>
+          <view class="order-stars">
+            <text wx:for="{{5}}" wx:key="*this" wx:for-item="s"
+                  class="star {{s < (item.urgency || 3) ? 'active' : ''}}"><image class="star-icon" src="{{s < (item.urgency || 3) ? '/static/icons/star-filled.svg' : '/static/icons/star.svg'}}" mode="aspectFit" /></text>
+          </view>
+        </view>
+        <view class="order-action">
+          <view wx:if="{{currentTab === 'pending'}}" class="accept-btn" bindtap="handleAccept" data-id="{{item._id}}">
+            <text>一键接单</text>
+          </view>
+          <view wx:elif="{{currentTab === 'mine'}}" class="detail-btn" bindtap="goDetail" data-id="{{item._id}}">
+            <text>查看详情</text>
+          </view>
+          <view wx:else class="status-tag">
+            <text>{{item.status === 'completed' ? '已完成' : item.status}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 代购配送列表 -->
+    <block wx:if="{{currentTab === 'shop_pending' || currentTab === 'shop_mine' || currentTab === 'shop_done'}}">
+      <view class="order-card shop-card" wx:for="{{orderList}}" wx:key="_id">
+        <view class="order-left">
+          <image class="order-avatar shop-img" src="{{item.goodsImage || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+        </view>
+        <view class="order-info">
+          <text class="order-name">{{item.goodsName}}</text>
+          <view class="shop-price-row">
+            <text class="shop-price">¥{{item.totalAmount}}</text>
+            <text class="shop-qty">x{{item.quantity}}</text>
+          </view>
+          <text class="order-address"><image class="inline-icon" src="/static/icons/location.svg" mode="aspectFit" /> {{item.elderAddress || '未设置地址'}}</text>
+          <text class="shop-elder-name">下单人：{{item.elderName || '老人'}}</text>
+          <view class="shop-status-tag status-{{item.orderStatus}}">
+            <text>{{shopStatusMap[item.orderStatus] || item.orderStatus}}</text>
+          </view>
+        </view>
+        <view class="order-action">
+          <view wx:if="{{currentTab === 'shop_pending'}}" class="accept-btn" bindtap="handleShopAccept" data-id="{{item._id}}">
+            <text>接单配送</text>
+          </view>
+          <view wx:else class="detail-btn" bindtap="goShopDetail" data-id="{{item._id}}">
+            <text>查看详情</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{orderList.length === 0}}" class="empty-state">
+      <image class="empty-icon" src="/static/icons/clipboard.svg" mode="aspectFit" />
+      <text class="empty-text">暂无订单</text>
+    </view>
+    </view>
+  </scroll-view>
+</view>

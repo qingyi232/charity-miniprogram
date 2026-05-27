@@ -1,0 +1,4 @@
+{"_id":"goods001","name":"志愿者荣誉证书","category":"certificate","pointsPrice":100,"stock":999,"exchangeCount":12,"description":"电子公益服务证书，可下载打印","detail":"记录您的志愿服务时长和贡献，适用于求职简历、学校加分等场景","status":"active","createTime":{"$date":"2026-01-01T00:00:00.000Z"}}
+{"_id":"goods002","name":"爱心志愿者徽章","category":"gift","pointsPrice":200,"stock":50,"exchangeCount":8,"description":"精美金属徽章，彰显志愿精神","detail":"定制锌合金材质，烤漆工艺，背面刻有志愿者编号","status":"active","createTime":{"$date":"2026-01-15T00:00:00.000Z"}}
+{"_id":"goods003","name":"急救技能培训课程","category":"course","pointsPrice":300,"stock":30,"exchangeCount":5,"description":"老年急救基础培训线上课程","detail":"包含心肺复苏、创伤包扎、异物梗阻处理等6节课程，每节15分钟","status":"active","createTime":{"$date":"2026-02-01T00:00:00.000Z"}}
+{"_id":"goods004","name":"志愿者文化衫","category":"gift","pointsPrice":500,"stock":20,"exchangeCount":3,"description":"纯棉定制文化衫，印有公益标志","detail":"100%纯棉，S/M/L/XL码可选，兑换后3个工作日内寄出","status":"active","createTime":{"$date":"2026-03-01T00:00:00.000Z"}}

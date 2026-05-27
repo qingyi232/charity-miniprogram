@@ -1,0 +1,192 @@
+<view class="detail-page">
+  <view class="detail-header">
+    <text class="detail-title">{{orderType === 'shop' ? '配送详情' : '订单详情'}}</text>
+  </view>
+
+  <scroll-view scroll-y class="detail-scroll">
+    <view class="scroll-inner">
+
+    <!-- ========== 帮扶任务详情 ========== -->
+    <block wx:if="{{orderType === 'help'}}">
+      <view class="info-card">
+        <view class="elder-row">
+          <image class="elder-avatar" src="{{order.elderAvatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+          <view class="elder-info">
+            <text class="elder-name">{{order.elderName || '老人'}}</text>
+            <text class="elder-addr"><image class="inline-icon" src="/static/icons/location.svg" mode="aspectFit" /> {{order.address || '未设置'}}</text>
+          </view>
+          <view class="status-badge status-{{order.status}}">
+            <text>{{statusText}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="info-card">
+        <text class="card-label">需求类型</text>
+        <view class="category-tag">
+          <text>{{order.category || '帮扶'}}</text>
+        </view>
+        <text class="card-label mt">需求标题</text>
+        <text class="card-value">{{order.title}}</text>
+        <text class="card-label mt">详细描述</text>
+        <text class="card-desc">{{order.description || '暂无描述'}}</text>
+        <text class="card-label mt">服务时间</text>
+        <text class="card-value">{{order.serviceTime || '待定'}}</text>
+        <text class="card-label mt">紧急程度</text>
+        <view class="urgency-stars">
+          <text wx:for="{{5}}" wx:key="*this" wx:for-item="s" wx:for-index="idx"
+                class="star {{idx < (order.urgency || 3) ? 'active' : ''}}"><image class="star-icon" src="{{idx < (order.urgency || 3) ? '/static/icons/star-filled.svg' : '/static/icons/star.svg'}}" mode="aspectFit" /></text>
+        </view>
+      </view>
+
+      <view class="action-area">
+        <view wx:if="{{order.status === 'pending'}}" class="action-btn accept" bindtap="handleAccept">
+          <text>接受任务</text>
+        </view>
+        <view wx:elif="{{order.status === 'accepted'}}" class="action-btn-group">
+          <view class="action-btn reject" bindtap="handleReject">
+            <text>放弃订单</text>
+          </view>
+          <view class="action-btn chat" bindtap="goChat">
+            <text>联系老人</text>
+          </view>
+          <view class="action-btn checkin" bindtap="handleCheckIn">
+            <text>签到开始服务</text>
+          </view>
+        </view>
+        <view wx:elif="{{order.status === 'in_progress'}}" class="action-btn-group">
+          <view class="action-btn chat" bindtap="goChat">
+            <text>联系老人</text>
+          </view>
+          <view class="action-btn checkout" bindtap="handleCheckOut">
+            <text>签退完成服务</text>
+          </view>
+        </view>
+        <view wx:elif="{{order.status === 'completed'}}" class="completed-info">
+          <text class="completed-text"><image class="inline-icon" src="/static/icons/check.svg" mode="aspectFit" /> 服务已完成</text>
+          <text wx:if="{{order.serviceHours}}" class="completed-hours">服务时长: {{order.serviceHours}}小时</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- ========== 代购配送详情 ========== -->
+    <block wx:if="{{orderType === 'shop'}}">
+      <!-- 订单状态进度条 -->
+      <view class="shop-progress-card">
+        <view class="progress-steps">
+          <view class="step {{order.orderStatus !== 'cancelled' ? 'done' : ''}}">
+            <view class="step-dot"></view>
+            <text class="step-label">下单</text>
+          </view>
+          <view class="step-line {{order.orderStatus !== 'pending_accept' && order.orderStatus !== 'cancelled' ? 'done' : ''}}"></view>
+          <view class="step {{order.orderStatus !== 'pending_accept' && order.orderStatus !== 'cancelled' ? 'done' : ''}}">
+            <view class="step-dot"></view>
+            <text class="step-label">接单</text>
+          </view>
+          <view class="step-line {{order.orderStatus === 'delivering' || order.orderStatus === 'delivered' || order.orderStatus === 'completed' ? 'done' : ''}}"></view>
+          <view class="step {{order.orderStatus === 'delivering' || order.orderStatus === 'delivered' || order.orderStatus === 'completed' ? 'done' : ''}}">
+            <view class="step-dot"></view>
+            <text class="step-label">配送</text>
+          </view>
+          <view class="step-line {{order.orderStatus === 'delivered' || order.orderStatus === 'completed' ? 'done' : ''}}"></view>
+          <view class="step {{order.orderStatus === 'delivered' || order.orderStatus === 'completed' ? 'done' : ''}}">
+            <view class="step-dot"></view>
+            <text class="step-label">送达</text>
+          </view>
+          <view class="step-line {{order.orderStatus === 'completed' ? 'done' : ''}}"></view>
+          <view class="step {{order.orderStatus === 'completed' ? 'done' : ''}}">
+            <view class="step-dot"></view>
+            <text class="step-label">收款</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 商品信息 -->
+      <view class="info-card">
+        <view class="shop-goods-row">
+          <image class="shop-goods-img" src="{{order.goodsImage || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+          <view class="shop-goods-info">
+            <text class="shop-goods-name">{{order.goodsName}}</text>
+            <text wx:if="{{order.spec}}" class="shop-goods-spec">规格：{{order.spec}}</text>
+            <view class="shop-goods-price-row">
+              <text class="shop-goods-price">¥{{order.price}}</text>
+              <text class="shop-goods-qty">x{{order.quantity}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="shop-total-row">
+          <text class="shop-total-label">订单总额</text>
+          <text class="shop-total-amount">¥{{order.totalAmount}}</text>
+        </view>
+        <view class="shop-pay-status-row">
+          <text class="shop-pay-label">付款状态</text>
+          <text class="shop-pay-val {{order.payStatus === 'paid' ? 'paid' : 'unpaid'}}">{{order.payStatus === 'paid' ? '已收款' : '待收款（送上门收）'}}</text>
+        </view>
+      </view>
+
+      <!-- 老人信息 -->
+      <view class="info-card">
+        <text class="card-label">下单人信息</text>
+        <view class="elder-row" style="margin-top:16rpx;">
+          <image class="elder-avatar" src="{{order.elderAvatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+          <view class="elder-info">
+            <text class="elder-name">{{order.elderName || '老人'}}</text>
+            <text class="elder-addr"><image class="inline-icon" src="/static/icons/location.svg" mode="aspectFit" /> {{order.elderAddress || '未设置地址'}}</text>
+            <text wx:if="{{order.elderPhone}}" class="elder-phone">电话：{{order.elderPhone}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 订单编号 -->
+      <view class="info-card">
+        <text class="card-label">订单编号</text>
+        <text class="card-value">{{order.orderNo}}</text>
+      </view>
+
+      <!-- 操作按钮区 -->
+      <view class="action-area">
+        <!-- 待接单 -->
+        <view wx:if="{{order.orderStatus === 'pending_accept'}}" class="action-btn accept" bindtap="handleShopAccept">
+          <text>接单配送</text>
+        </view>
+        <!-- 已接单·待配送 -->
+        <view wx:elif="{{order.orderStatus === 'accepted'}}" class="action-btn-group">
+          <view class="action-btn reject" bindtap="handleShopReject">
+            <text>放弃配送</text>
+          </view>
+          <view class="action-btn chat" bindtap="callElder">
+            <text>联系老人</text>
+          </view>
+          <view class="action-btn checkin" bindtap="handleStartDelivery">
+            <text>开始配送</text>
+          </view>
+        </view>
+        <!-- 配送中 -->
+        <view wx:elif="{{order.orderStatus === 'delivering'}}" class="action-btn-group">
+          <view class="action-btn chat" bindtap="callElder">
+            <text>联系老人</text>
+          </view>
+          <view class="action-btn checkout" bindtap="handleDelivered">
+            <text>确认送达</text>
+          </view>
+        </view>
+        <!-- 已送达·待收款 -->
+        <view wx:elif="{{order.orderStatus === 'delivered'}}" class="action-btn-group">
+          <view class="action-btn chat" bindtap="callElder">
+            <text>联系老人</text>
+          </view>
+          <view class="action-btn collect-pay" bindtap="handleCollectPayment">
+            <text>确认收款 ¥{{order.totalAmount}}</text>
+          </view>
+        </view>
+        <!-- 已完成 -->
+        <view wx:elif="{{order.orderStatus === 'completed'}}" class="completed-info">
+          <text class="completed-text"><image class="inline-icon" src="/static/icons/check.svg" mode="aspectFit" /> 配送已完成</text>
+          <text class="completed-hours">已收款 ¥{{order.totalAmount}}</text>
+        </view>
+      </view>
+    </block>
+
+    </view>
+  </scroll-view>
+</view>

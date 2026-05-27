@@ -1,0 +1,104 @@
+<view class="detail-page" wx:if="{{goods}}">
+  <image class="detail-img" src="{{goods.image || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+
+  <view class="detail-card">
+    <view class="detail-price-row">
+      <text class="detail-price-sym">¥</text>
+      <text class="detail-price">{{goods.price}}</text>
+      <text class="detail-spec" wx:if="{{goods.spec}}">{{goods.spec}}</text>
+    </view>
+    <text class="detail-name">{{goods.name}}</text>
+    <text class="detail-desc" wx:if="{{goods.description}}">{{goods.description}}</text>
+  </view>
+
+  <view class="info-card">
+    <view class="info-row">
+      <text class="info-label">分类</text>
+      <text class="info-value">{{categoryText}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">库存</text>
+      <text class="info-value">{{goods.stock || 0}}件</text>
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="btn-contact" bindtap="contactService">
+      <image class="btn-icon" src="/static/icons/phone.svg" mode="aspectFit" />
+      <text>联系社区</text>
+    </view>
+    <view class="btn-buy {{goods.stock <= 0 ? 'disabled' : ''}}" bindtap="showOrderPanel">
+      <text>{{goods.stock <= 0 ? '暂时缺货' : '我要选购'}}</text>
+    </view>
+  </view>
+</view>
+
+<!-- 下单面板 -->
+<view class="panel-mask {{showPanel ? 'show' : ''}}" bindtap="hideOrderPanel"></view>
+<view class="order-panel {{showPanel ? 'show' : ''}}">
+  <view class="panel-header">
+    <text class="panel-title">确认选购</text>
+    <view class="panel-close" bindtap="hideOrderPanel">✕</view>
+  </view>
+  <view class="panel-goods" wx:if="{{goods}}">
+    <image class="panel-img" src="{{goods.image || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+    <view class="panel-info">
+      <text class="panel-name">{{goods.name}}</text>
+      <text class="panel-price">¥{{goods.price}}</text>
+    </view>
+  </view>
+  <view class="panel-qty">
+    <text class="qty-label">购买数量</text>
+    <view class="qty-control">
+      <view class="qty-btn" bindtap="decreaseQty">－</view>
+      <text class="qty-num">{{quantity}}</text>
+      <view class="qty-btn" bindtap="increaseQty">＋</view>
+    </view>
+  </view>
+  <view class="panel-total">
+    <text class="total-label">合计</text>
+    <text class="total-price">¥{{totalPrice}}</text>
+  </view>
+  <view class="panel-buy-btn" bindtap="confirmOrder">
+    <text>确认下单</text>
+  </view>
+</view>
+
+<!-- 下单弹窗 -->
+<view class="pay-mask {{showPay ? 'show' : ''}}"></view>
+<view class="pay-dialog {{showPay ? 'show' : ''}}">
+  <!-- 下单中 -->
+  <view wx:if="{{payStep === 'paying'}}" class="pay-content">
+    <view class="pay-loading"></view>
+    <text class="pay-text">下单处理中...</text>
+    <text class="pay-sub">正在提交订单，请稍候</text>
+  </view>
+  <!-- 下单成功 -->
+  <view wx:if="{{payStep === 'success'}}" class="pay-content">
+    <view class="pay-success-icon">✓</view>
+    <text class="pay-text">下单成功</text>
+    <text class="pay-amount">¥{{totalPrice}}</text>
+    <text class="pay-sub">订单已提交，等待志愿者接单配送，送上门后再付款</text>
+    <view class="pay-actions">
+      <view class="pay-btn-secondary" bindtap="continueShopping">继续购物</view>
+      <view class="pay-btn-primary" bindtap="viewOrders">查看订单</view>
+    </view>
+  </view>
+  <!-- 下单失败 -->
+  <view wx:if="{{payStep === 'fail'}}" class="pay-content">
+    <view class="pay-fail-icon">✕</view>
+    <text class="pay-text">下单失败</text>
+    <text class="pay-sub">{{payError}}</text>
+    <view class="pay-actions">
+      <view class="pay-btn-secondary" bindtap="closePay">取消</view>
+      <view class="pay-btn-primary" bindtap="retryPay">重试</view>
+    </view>
+  </view>
+</view>
+
+<view wx:if="{{!goods && !loading}}" class="empty-state">
+  <text class="empty-text">商品不存在</text>
+</view>
+<view wx:if="{{loading}}" class="loading-state">
+  <text>加载中...</text>
+</view>

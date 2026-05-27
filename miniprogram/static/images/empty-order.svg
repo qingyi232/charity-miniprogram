@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <circle cx="100" cy="90" r="60" fill="#F5F5F5"/>
+  <!-- clipboard -->
+  <rect x="70" y="55" width="60" height="75" rx="6" fill="#E0E0E0"/>
+  <rect x="85" y="48" width="30" height="12" rx="4" fill="#BDBDBD"/>
+  <rect x="80" y="75" width="40" height="4" rx="2" fill="#BDBDBD"/>
+  <rect x="80" y="87" width="30" height="4" rx="2" fill="#BDBDBD"/>
+  <rect x="80" y="99" width="35" height="4" rx="2" fill="#BDBDBD"/>
+  <rect x="80" y="111" width="20" height="4" rx="2" fill="#BDBDBD"/>
+  <!-- question mark -->
+  <text x="100" y="170" text-anchor="middle" font-size="14" fill="#BDBDBD" font-family="sans-serif">��Upn</text>
+</svg>

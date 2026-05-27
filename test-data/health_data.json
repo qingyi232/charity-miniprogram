@@ -1,0 +1,4 @@
+{"_id":"health001","userId":"elder001","systolic":135,"diastolic":85,"heartRate":72,"bloodOxygen":97,"bloodSugar":5.8,"temperature":36.5,"source":"手动录入","createTime":{"$date":"2026-05-24T08:00:00.000Z"}}
+{"_id":"health002","userId":"elder002","systolic":155,"diastolic":95,"heartRate":88,"bloodOxygen":93,"bloodSugar":7.2,"temperature":36.8,"source":"智能设备","createTime":{"$date":"2026-05-24T09:00:00.000Z"}}
+{"_id":"health003","userId":"elder003","systolic":128,"diastolic":80,"heartRate":68,"bloodOxygen":98,"bloodSugar":5.5,"temperature":36.4,"source":"手动录入","createTime":{"$date":"2026-05-25T07:30:00.000Z"}}
+{"_id":"health004","userId":"elder001","systolic":142,"diastolic":92,"heartRate":76,"bloodOxygen":96,"bloodSugar":6.1,"temperature":36.6,"source":"智能设备","createTime":{"$date":"2026-05-25T08:00:00.000Z"}}

@@ -1,0 +1,25 @@
+<view class="ranking-page">
+  <view class="ranking-header">
+    <text class="ranking-title">心火积分排行榜</text>
+    <text class="ranking-sub">每月更新 · 公益之星</text>
+  </view>
+
+  <view class="ranking-list">
+    <view class="ranking-item {{index < 3 ? 'top' : ''}}" wx:for="{{rankList}}" wx:key="_id">
+      <view class="rank-num rank-{{index < 3 ? index + 1 : 'normal'}}">{{index + 1}}</view>
+      <image class="rank-avatar" src="{{item.avatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+      <view class="rank-info">
+        <text class="rank-name">{{item.nickname || '志愿者'}}</text>
+        <text class="rank-hours">服务 {{item.totalServiceHours || 0}} 小时</text>
+      </view>
+      <view class="rank-points">
+        <text class="rank-points-num">{{item.totalPoints || 0}}</text>
+        <text class="rank-points-label">积分</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{rankList.length === 0}}" class="empty-state">
+    <text>暂无排行数据</text>
+  </view>
+</view>

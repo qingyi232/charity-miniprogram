@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" fill="none">
+  <rect width="600" height="200" rx="16" fill="url(#g2)"/>
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="600" y2="200">
+      <stop offset="0%" stop-color="#4DD0E1"/>
+      <stop offset="100%" stop-color="#2DB5A0"/>
+    </linearGradient>
+  </defs>
+  <!-- volunteer with elderly -->
+  <circle cx="480" cy="65" r="20" fill="#fff" opacity="0.3"/>
+  <circle cx="520" cy="75" r="18" fill="#fff" opacity="0.2"/>
+  <path d="M470 90 Q478 108 480 115" stroke="#fff" stroke-width="2.5" opacity="0.5"/>
+  <path d="M510 95 Q516 110 520 115" stroke="#fff" stroke-width="2.5" opacity="0.5"/>
+  <!-- handshake symbol -->
+  <path d="M490 100 Q500 92 510 100" stroke="#fff" stroke-width="3" fill="none" opacity="0.6"/>
+  <!-- text -->
+  <text x="40" y="65" font-size="24" fill="#fff" font-family="sans-serif" font-weight="bold">'f�?</text>
+  <text x="40" y="95" font-size="18" fill="rgba(255,255,255,0.9)" font-family="sans-serif">l�.v��-�</text>
+  <text x="40" y="125" font-size="13" fill="rgba(255,255,255,0.7)" font-family="sans-serif">�U
+� � ��.v � �</text>
+  <!-- medal -->
+  <circle cx="550" cy="150" r="16" fill="#FFD54F" opacity="0.5"/>
+  <text x="550" y="155" text-anchor="middle" font-size="14" fill="#fff" font-family="sans-serif"></text>
+  <!-- decorative -->
+  <circle cx="350" cy="30" r="5" fill="#fff" opacity="0.15"/>
+  <circle cx="400" cy="170" r="8" fill="#fff" opacity="0.1"/>
+</svg>

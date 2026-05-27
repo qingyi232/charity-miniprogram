@@ -1,0 +1,122 @@
+<view class="chat-page">
+  <scroll-view
+    scroll-y
+    class="chat-scroll"
+    scroll-into-view="{{scrollToId}}"
+    enhanced
+    show-scrollbar="{{false}}"
+    refresher-enabled="{{true}}"
+    bindrefresherrefresh="onPullDown"
+    refresher-triggered="{{pullDownTriggered}}"
+  >
+    <view class="chat-list">
+      <view wx:if="{{loading}}" class="loading-tip">
+        <text>加载中...</text>
+      </view>
+      <view wx:if="{{!loading && messageList.length === 0}}" class="empty-chat">
+        <image class="empty-icon" src="/static/icons/chat.svg" mode="aspectFit" />
+        <text class="empty-text">暂无消息，发送一条消息开始聊天</text>
+      </view>
+
+      <block wx:for="{{messageList}}" wx:key="_id">
+        <view wx:if="{{item.showTime}}" class="time-divider">
+          <text class="time-text">{{item.timeStr}}</text>
+        </view>
+
+        <view
+          class="msg-row {{item.isSelf ? 'self' : 'other'}}"
+          id="msg-{{item._id}}"
+        >
+          <image
+            wx:if="{{!item.isSelf}}"
+            class="msg-avatar"
+            src="{{item.fromUserAvatar || '/static/images/default-avatar.svg'}}"
+            mode="aspectFill"
+          />
+          <view class="msg-content-wrap">
+            <!-- 文字消息 -->
+            <view wx:if="{{item.msgType !== 'voice'}}" class="msg-bubble {{item.isSelf ? 'self-bubble' : 'other-bubble'}}">
+              <text class="msg-text">{{item.content}}</text>
+            </view>
+            <!-- 语音消息 -->
+            <view
+              wx:else
+              class="voice-bubble {{item.isSelf ? 'self-bubble' : 'other-bubble'}}"
+              style="width: {{(item.voiceDuration || 1) * 20 + 120}}rpx; max-width: 400rpx;"
+              bindtap="playVoice"
+              data-index="{{index}}"
+            >
+              <view class="voice-inner {{item.isSelf ? 'voice-self' : 'voice-other'}}">
+                <view class="voice-icon-wrap {{playingIndex === index ? 'playing' : ''}}">
+                  <view class="voice-bar bar1"></view>
+                  <view class="voice-bar bar2"></view>
+                  <view class="voice-bar bar3"></view>
+                </view>
+                <text class="voice-duration">{{item.voiceDuration || 1}}"</text>
+              </view>
+            </view>
+            <view wx:if="{{item.isSelf && item.sendStatus}}" class="msg-status">
+              <text wx:if="{{item.sendStatus === 'sending'}}" class="status-sending">发送中</text>
+              <text wx:elif="{{item.sendStatus === 'failed'}}" class="status-failed" bindtap="resendMsg" data-index="{{index}}">发送失败，点击重试</text>
+            </view>
+          </view>
+          <image
+            wx:if="{{item.isSelf}}"
+            class="msg-avatar"
+            src="{{myAvatar || '/static/images/default-avatar.svg'}}"
+            mode="aspectFill"
+          />
+        </view>
+      </block>
+    </view>
+    <view id="chat-bottom"></view>
+  </scroll-view>
+
+  <!-- 录音浮层 -->
+  <view wx:if="{{recording}}" class="recording-overlay">
+    <view class="recording-modal {{cancelRecording ? 'cancel-mode' : ''}}">
+      <view class="recording-waves">
+        <view class="wave wave1"></view>
+        <view class="wave wave2"></view>
+        <view class="wave wave3"></view>
+      </view>
+      <text class="recording-tip">{{cancelRecording ? '松开取消' : '上滑取消发送'}}</text>
+      <text class="recording-time">{{recordingTime}}"</text>
+    </view>
+  </view>
+
+  <!-- 输入栏 -->
+  <view class="chat-input-bar">
+    <view class="voice-toggle" bindtap="toggleInputMode">
+      <image
+        class="toggle-icon"
+        src="{{voiceMode ? '/static/icons/keyboard.svg' : '/static/icons/mic.svg'}}"
+        mode="aspectFit"
+      />
+    </view>
+
+    <view wx:if="{{voiceMode}}" class="voice-record-btn {{recording ? 'pressing' : ''}}"
+      bindtouchstart="startRecord"
+      bindtouchend="stopRecord"
+      bindtouchmove="onRecordMove"
+      bindtouchcancel="cancelRecord"
+    >
+      <text>{{recording ? '松开发送' : '按住说话'}}</text>
+    </view>
+
+    <input
+      wx:else
+      class="chat-input"
+      value="{{inputValue}}"
+      placeholder="输入消息..."
+      confirm-type="send"
+      bindinput="onInput"
+      bindconfirm="handleSend"
+      adjust-position="{{true}}"
+      cursor-spacing="20"
+    />
+    <view wx:if="{{!voiceMode}}" class="send-btn {{inputValue.trim() ? 'active' : ''}}" bindtap="handleSend">
+      <text>发送</text>
+    </view>
+  </view>
+</view>

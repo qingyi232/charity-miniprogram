@@ -1,0 +1,106 @@
+<view class="mine-page">
+  <view class="user-header">
+    <image class="user-avatar" src="{{userInfo.avatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickname || userInfo.name || '志愿者'}}</text>
+      <view class="user-badge">
+        <image class="badge-icon" src="/static/icons/medal.svg" mode="aspectFit" />
+        <text class="badge-text">{{starLevelText}}</text>
+      </view>
+    </view>
+    <view class="service-hours">
+      <text class="hours-value">{{userInfo.totalServiceHours || 0}}</text>
+      <text class="hours-label">服务时长(h)</text>
+    </view>
+  </view>
+
+  <view class="stats-row">
+    <view class="stat-item">
+      <text class="stat-value">{{stats.totalOrders || 0}}</text>
+      <text class="stat-label">完成订单</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{stats.pairCount || 0}}</text>
+      <text class="stat-label">结对老人</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-value">{{stats.rating || '--'}}</text>
+      <text class="stat-label">好评率</text>
+    </view>
+  </view>
+
+  <view class="menu-group">
+    <view class="menu-item" bindtap="goVerify">
+      <image class="menu-icon" src="/static/icons/check.svg" mode="aspectFit" />
+      <text class="menu-text">实名认证</text>
+      <view class="menu-right">
+        <text class="verify-status {{userInfo.verified ? 'verified' : 'unverified'}}">{{userInfo.verified ? '已认证' : '未认证'}}</text>
+        <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+      </view>
+    </view>
+    <view class="menu-item" bindtap="goMyOrders">
+      <image class="menu-icon" src="/static/icons/clipboard.svg" mode="aspectFit" />
+      <text class="menu-text">我的任务</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goMyPair">
+      <image class="menu-icon" src="/static/icons/grandma.svg" mode="aspectFit" />
+      <text class="menu-text">结对老人</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goServiceRecord">
+      <image class="menu-icon" src="/static/icons/chart.svg" mode="aspectFit" />
+      <text class="menu-text">服务记录</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+  </view>
+
+  <view class="menu-group">
+    <view class="menu-item" bindtap="goTraining">
+      <image class="menu-icon" src="/static/icons/book.svg" mode="aspectFit" />
+      <text class="menu-text">培训支持</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goShop">
+      <image class="menu-icon" src="/static/icons/star-filled.svg" mode="aspectFit" />
+      <text class="menu-text">积分商城</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goCertificate">
+      <image class="menu-icon" src="/static/icons/medal.svg" mode="aspectFit" />
+      <text class="menu-text">证书申请</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goEditProfile">
+      <image class="menu-icon" src="/static/icons/edit.svg" mode="aspectFit" />
+      <text class="menu-text">编辑资料</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goActivity">
+      <image class="menu-icon" src="/static/icons/handshake.svg" mode="aspectFit" />
+      <text class="menu-text">公益活动</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goMyCollection">
+      <image class="menu-icon" src="/static/icons/star.svg" mode="aspectFit" />
+      <text class="menu-text">我的收藏</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goPrivacy">
+      <image class="menu-icon" src="/static/icons/lock.svg" mode="aspectFit" />
+      <text class="menu-text">隐私设置</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+    <view class="menu-item" bindtap="goAbout">
+      <image class="menu-icon" src="/static/icons/info.svg" mode="aspectFit" />
+      <text class="menu-text">关于我们</text>
+      <image class="menu-arrow" src="/static/icons/arrow-right.svg" mode="aspectFit" />
+    </view>
+  </view>
+
+  <view class="logout-wrapper">
+    <view class="logout-btn" bindtap="handleLogout">
+      <text>退出登录</text>
+    </view>
+  </view>
+</view>

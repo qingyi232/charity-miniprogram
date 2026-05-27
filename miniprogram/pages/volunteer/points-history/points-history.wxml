@@ -1,0 +1,13 @@
+<view class="history-page">
+  <view class="history-item" wx:for="{{historyList}}" wx:key="_id">
+    <view class="history-left">
+      <text class="history-reason">{{item.reason}}</text>
+      <text class="history-time">{{item.createTimeStr}}</text>
+    </view>
+    <text class="history-amount {{item.amount > 0 ? 'earn' : 'spend'}}">{{item.amount > 0 ? '+' : ''}}{{item.amount}}</text>
+  </view>
+
+  <view wx:if="{{historyList.length === 0}}" class="empty-state">
+    <text>暂无积分记录</text>
+  </view>
+</view>

@@ -1,0 +1,73 @@
+<view class="pair-page">
+  <view class="page-header">
+    <text class="page-title">我的志愿者</text>
+  </view>
+
+  <!-- 已结对的志愿者 -->
+  <view wx:if="{{pairedVolunteer}}" class="paired-section">
+    <view class="volunteer-card">
+      <image class="vol-avatar" src="{{pairedVolunteer.avatar || '/static/images/default-avatar.svg'}}" mode="aspectFill" />
+      <view class="vol-info">
+        <text class="vol-name">{{pairedVolunteer.name}}</text>
+        <view class="vol-badge">
+          <text><image class="inline-icon" src="/static/icons/medal.svg" mode="aspectFit" /> {{pairedVolunteer.level || '初级志愿者'}}</text>
+        </view>
+        <text class="vol-hours">服务时长: {{pairedVolunteer.serviceHours || 0}} 小时</text>
+      </view>
+    </view>
+
+    <view class="action-row">
+      <view class="action-btn call-btn" bindtap="callVolunteer">
+        <image class="action-icon" src="/static/icons/phone.svg" mode="aspectFit" />
+        <text class="action-text">打电话</text>
+      </view>
+      <view class="action-btn chat-btn" bindtap="goChat">
+        <image class="action-icon" src="/static/icons/chat.svg" mode="aspectFit" />
+        <text class="action-text">发消息</text>
+      </view>
+    </view>
+
+    <view class="info-card">
+      <view class="info-item">
+        <text class="info-label">联系电话</text>
+        <text class="info-value">{{pairedVolunteer.phone || '未公开'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">结对时间</text>
+        <text class="info-value">{{pairedVolunteer.pairDate || '--'}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">服务次数</text>
+        <text class="info-value">{{pairedVolunteer.serviceCount || 0}} 次</text>
+      </view>
+    </view>
+
+    <!-- 帮扶服务记录 -->
+    <view class="service-record-section">
+      <text class="section-title">帮扶服务记录</text>
+      <view wx:if="{{serviceRecords.length > 0}}" class="record-list">
+        <view class="record-item" wx:for="{{serviceRecords}}" wx:key="_id">
+          <view class="record-dot"></view>
+          <view class="record-content">
+            <text class="record-title">{{item.title || '帮扶服务'}}</text>
+            <text class="record-date">{{item.dateStr}} · {{item.serviceHours || 1}}小时</text>
+          </view>
+          <view wx:if="{{item.rating}}" class="record-rating">
+            <image wx:for="{{item.rating}}" wx:key="*this" wx:for-item="s"
+                   class="mini-star" src="/static/icons/star-filled.svg" mode="aspectFit" />
+          </view>
+        </view>
+      </view>
+      <view wx:else class="no-records">
+        <text>暂无帮扶记录</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 未结对提示 -->
+  <view wx:else class="empty-pair">
+    <image class="empty-icon" src="/static/icons/doctor.svg" mode="aspectFit" />
+    <text class="empty-title">暂无结对志愿者</text>
+    <text class="empty-desc">系统将根据您的需求自动匹配志愿者</text>
+  </view>
+</view>

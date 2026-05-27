@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" fill="none">
+  <rect width="300" height="200" rx="12" fill="#FFF3E0"/>
+  <!-- book icon -->
+  <rect x="100" y="50" width="50" height="65" rx="4" fill="#FFB74D" opacity="0.6"/>
+  <rect x="150" y="50" width="50" height="65" rx="4" fill="#FF9800" opacity="0.6"/>
+  <line x1="150" y1="50" x2="150" y2="115" stroke="#E65100" stroke-width="2"/>
+  <!-- pages -->
+  <rect x="110" y="60" width="30" height="3" rx="1.5" fill="#fff"/>
+  <rect x="110" y="68" width="25" height="3" rx="1.5" fill="#fff"/>
+  <rect x="110" y="76" width="28" height="3" rx="1.5" fill="#fff"/>
+  <rect x="160" y="60" width="30" height="3" rx="1.5" fill="#fff"/>
+  <rect x="160" y="68" width="25" height="3" rx="1.5" fill="#fff"/>
+  <!-- graduation cap -->
+  <polygon points="150,30 120,45 150,55 180,45" fill="#5D4037"/>
+  <line x1="150" y1="55" x2="150" y2="45" stroke="#5D4037" stroke-width="2"/>
+  <circle cx="175" cy="50" r="3" fill="#FFD54F"/>
+  <line x1="175" y1="50" x2="175" y2="62" stroke="#FFD54F" stroke-width="1.5"/>
+  <!-- text -->
+  <text x="150" y="150" text-anchor="middle" font-size="18" fill="#5D4037" font-family="sans-serif" font-weight="bold">���</text>
+  <text x="150" y="172" text-anchor="middle" font-size="12" fill="#8D6E63" font-family="sans-serif">{~f` �P;</text>
+</svg>

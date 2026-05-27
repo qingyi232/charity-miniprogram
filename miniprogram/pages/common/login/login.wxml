@@ -1,0 +1,49 @@
+<view class="login-page">
+  <view class="login-bg">
+    <image class="login-bg-img" src="/static/images/login-bg.svg" mode="aspectFit" />
+  </view>
+
+  <view class="login-content">
+    <view class="logo-area">
+      <view class="logo-circle">
+        <image class="logo-img" src="/static/images/logo.jpg" mode="aspectFill" />
+      </view>
+      <text class="app-name">青老代际智能融合平台</text>
+      <text class="app-slogan">智慧融合 · 代际共融</text>
+    </view>
+
+    <view class="role-select">
+      <text class="role-title">请选择您的身份</text>
+
+      <view class="role-cards">
+        <view class="role-card elder-card {{selectedRole === 'elder' ? 'selected' : ''}}"
+              bindtap="selectRole" data-role="elder">
+          <view class="role-icon-wrap elder-icon-bg">
+            <image class="role-emoji" src="/static/icons/elder.svg" mode="aspectFit" />
+          </view>
+          <text class="role-name">我是老年人</text>
+          <text class="role-desc">发布需求、查看健康数据</text>
+          <view class="check-mark" wx:if="{{selectedRole === 'elder'}}"><image class="check-icon" src="/static/icons/check.svg" mode="aspectFit" /></view>
+        </view>
+
+        <view class="role-card volunteer-card {{selectedRole === 'volunteer' ? 'selected' : ''}}"
+              bindtap="selectRole" data-role="volunteer">
+          <view class="role-icon-wrap volunteer-icon-bg">
+            <image class="role-emoji" src="/static/icons/volunteer.svg" mode="aspectFit" />
+          </view>
+          <text class="role-name">我是志愿者</text>
+          <text class="role-desc">接单帮扶、公益服务</text>
+          <view class="check-mark" wx:if="{{selectedRole === 'volunteer'}}"><image class="check-icon" src="/static/icons/check.svg" mode="aspectFit" /></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="login-actions">
+      <button class="wx-login-btn" bindtap="handleWxLogin"
+              disabled="{{!selectedRole || logging}}">
+        {{logging ? '登录中...' : '微信一键登录'}}
+      </button>
+      <text class="agreement">登录即表示同意《用户协议》和《隐私政策》</text>
+    </view>
+  </view>
+</view>

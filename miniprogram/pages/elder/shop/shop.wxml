@@ -1,0 +1,42 @@
+<view class="shop-page">
+  <view class="shop-header">
+    <text class="shop-title">便民商城</text>
+    <text class="shop-sub">社区便民物品，方便选购</text>
+  </view>
+
+  <view class="category-bar">
+    <view class="cat-item {{currentCategory === '' ? 'active' : ''}}" bindtap="switchCategory" data-cat="">全部</view>
+    <view class="cat-item {{currentCategory === 'grain_oil' ? 'active' : ''}}" bindtap="switchCategory" data-cat="grain_oil">粮油米面</view>
+    <view class="cat-item {{currentCategory === 'daily' ? 'active' : ''}}" bindtap="switchCategory" data-cat="daily">日用百货</view>
+    <view class="cat-item {{currentCategory === 'food' ? 'active' : ''}}" bindtap="switchCategory" data-cat="food">食品饮料</view>
+    <view class="cat-item {{currentCategory === 'health_care' ? 'active' : ''}}" bindtap="switchCategory" data-cat="health_care">保健用品</view>
+    <view class="cat-item {{currentCategory === 'other' ? 'active' : ''}}" bindtap="switchCategory" data-cat="other">其他</view>
+  </view>
+
+  <view class="goods-grid">
+    <view class="goods-card" wx:for="{{goodsList}}" wx:key="_id" bindtap="goDetail" data-id="{{item._id}}">
+      <image class="goods-img" src="{{item.image || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+      <view class="goods-info">
+        <text class="goods-name">{{item.name}}</text>
+        <text class="goods-spec" wx:if="{{item.spec}}">{{item.spec}}</text>
+        <text class="goods-desc">{{item.description}}</text>
+        <view class="goods-bottom">
+          <view class="goods-price">
+            <text class="price-sym">¥</text>
+            <text class="price-num">{{item.price}}</text>
+          </view>
+          <text class="goods-stock">库存{{item.stock || 0}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{goodsList.length === 0 && !loading}}" class="empty-state">
+    <image class="empty-icon" src="/static/icons/clipboard.svg" mode="aspectFit" />
+    <text class="empty-text">暂无商品</text>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-state">
+    <text>加载中...</text>
+  </view>
+</view>

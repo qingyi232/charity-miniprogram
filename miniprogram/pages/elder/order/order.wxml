@@ -1,0 +1,109 @@
+<view class="order-page">
+  <view class="page-header">
+    <text class="page-title">我的订单</text>
+  </view>
+
+  <!-- 主分类切换：帮扶需求 / 商城订单 -->
+  <view class="main-tab-bar">
+    <view class="main-tab {{mainTab === 'help' ? 'active' : ''}}" bindtap="switchMainTab" data-tab="help">
+      <text>帮扶需求</text>
+    </view>
+    <view class="main-tab {{mainTab === 'shop' ? 'active' : ''}}" bindtap="switchMainTab" data-tab="shop">
+      <text>商城订单</text>
+    </view>
+  </view>
+
+  <!-- 帮扶需求筛选 -->
+  <view wx:if="{{mainTab === 'help'}}" class="tab-bar-filter">
+    <view class="tab-item {{currentTab === 'all' ? 'active' : ''}}" bindtap="switchTab" data-tab="all">
+      <text>全部</text>
+    </view>
+    <view class="tab-item {{currentTab === 'pending' ? 'active' : ''}}" bindtap="switchTab" data-tab="pending">
+      <text>待接单</text>
+    </view>
+    <view class="tab-item {{currentTab === 'accepted' ? 'active' : ''}}" bindtap="switchTab" data-tab="accepted">
+      <text>进行中</text>
+    </view>
+    <view class="tab-item {{currentTab === 'completed' ? 'active' : ''}}" bindtap="switchTab" data-tab="completed">
+      <text>已完成</text>
+    </view>
+  </view>
+
+  <!-- 商城订单筛选 -->
+  <view wx:if="{{mainTab === 'shop'}}" class="tab-bar-filter">
+    <view class="tab-item {{currentTab === 'all' ? 'active' : ''}}" bindtap="switchTab" data-tab="all">
+      <text>全部</text>
+    </view>
+    <view class="tab-item {{currentTab === 'pending_accept' ? 'active' : ''}}" bindtap="switchTab" data-tab="pending_accept">
+      <text>待接单</text>
+    </view>
+    <view class="tab-item {{currentTab === 'delivering' ? 'active' : ''}}" bindtap="switchTab" data-tab="delivering">
+      <text>配送中</text>
+    </view>
+    <view class="tab-item {{currentTab === 'completed' ? 'active' : ''}}" bindtap="switchTab" data-tab="completed">
+      <text>已完成</text>
+    </view>
+  </view>
+
+  <scroll-view scroll-y class="order-scroll">
+    <view class="scroll-inner">
+
+    <!-- 帮扶需求列表 -->
+    <block wx:if="{{mainTab === 'help'}}">
+      <view class="order-card" wx:for="{{orderList}}" wx:key="_id" bindtap="goDetail" data-id="{{item._id}}">
+        <view class="order-card-header">
+          <text class="order-title">{{item.title}}</text>
+          <text class="order-status status-{{item.status}}">{{statusMap[item.status]}}</text>
+        </view>
+        <text class="order-desc">{{item.description}}</text>
+        <view class="order-card-footer">
+          <text class="order-time">{{item.createTimeStr || '刚刚'}}</text>
+          <text class="order-category">{{categoryMap[item.category] || item.category || '帮扶'}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 商城订单列表 -->
+    <block wx:if="{{mainTab === 'shop'}}">
+      <view class="order-card shop-order-card" wx:for="{{orderList}}" wx:key="_id" bindtap="goShopDetail" data-id="{{item._id}}">
+        <view class="shop-order-top">
+          <image class="shop-order-img" src="{{item.goodsImage || '/static/images/default-goods.svg'}}" mode="aspectFill" />
+          <view class="shop-order-info">
+            <text class="shop-order-name">{{item.goodsName}}</text>
+            <view class="shop-order-price-row">
+              <text class="shop-order-price">¥{{item.totalAmount}}</text>
+              <text class="shop-order-qty">x{{item.quantity}}</text>
+            </view>
+          </view>
+          <view class="shop-order-status status-shop-{{item.orderStatus}}">
+            <text>{{shopStatusMap[item.orderStatus]}}</text>
+          </view>
+        </view>
+        <view wx:if="{{item.volunteerName}}" class="shop-order-volunteer">
+          <text>配送志愿者：{{item.volunteerName}}</text>
+        </view>
+        <view class="shop-order-footer">
+          <text class="order-no">{{item.orderNo}}</text>
+          <text class="shop-order-pay {{item.payStatus === 'paid' ? 'paid' : 'unpaid'}}">{{item.payStatus === 'paid' ? '已付款' : '送上门收款'}}</text>
+        </view>
+      </view>
+    </block>
+
+    <view wx:if="{{orderList.length === 0}}" class="empty-state">
+      <image class="empty-icon" src="/static/icons/clipboard.svg" mode="aspectFit" />
+      <text class="empty-text">暂无订单</text>
+      <view wx:if="{{mainTab === 'help'}}" class="empty-btn" bindtap="goCreate">
+        <text>发布需求</text>
+      </view>
+      <view wx:if="{{mainTab === 'shop'}}" class="empty-btn" bindtap="goShop">
+        <text>去商城看看</text>
+      </view>
+    </view>
+    </view>
+  </scroll-view>
+
+  <!-- 浮动发布按钮（仅帮扶模式） -->
+  <view wx:if="{{mainTab === 'help'}}" class="fab-btn" bindtap="goCreate">
+    <image class="fab-icon" src="/static/icons/plus.svg" mode="aspectFit" />
+  </view>
+</view>
